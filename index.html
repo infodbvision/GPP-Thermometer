@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script src="markerclusterer.js"></script>
+	<script type="text/javascript" src="downloadxml.js"></script>
 	<meta charset="UTF-8">
 	<title>A Basic Map</title>
 	<style>
@@ -18,13 +18,14 @@
 	</style>
 	<script>
 
-	function initMap() {
+	function initialize() {
 		var marker;
 		var image;
+		var markers = [];
 		var mapOptions = {
-			zoom: 13,
+			zoom: 8,
 			maxZoom: 15,
-			minZoom: 10,
+			minZoom: 7,
 			center: new google.maps.LatLng(52, 5),
 			mapTypeId: 'roadmap'
 		};
@@ -38,23 +39,45 @@
 			function (xml) {
 				$(xml).find('Row').each(function(){
 					image = "marker.png";
-//					var markers = [];
-//					for (var i = 0; i < 100; ++i) {
 						var lat = $(this).find('Latitude').text();
 						var lng = $(this).find('Longitude').text();
 						var markerCoords = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
-						var marker = new google.maps.Marker({position: markerCoords, map:map,	 icon:image});
-//						markers.push(marker);
-	//				}
-	//				var markerCluster = new MarkerClusterer(map, markers);
-				});
-			}
-		});
+						var marker = new google.maps.Marker({position: markerCoords, map:map, icon:image});
+						console.log(markerCoords);
+//			var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+			});
+		}
+	});
+/*	downloadUrl("Landmarks.xml", function(data) {
+        var bounds = new google.maps.LatLngBounds();
+        var markers = data.documentElement.getElementsByTagName("Row");
+        for (var i = 0; i < markers.length; i++) {
+          var latlng = new google.maps.LatLng(parseFloat(markers[i].getAttribute("Latitude")),
+                                              parseFloat(markers[i].getAttribute("Longitude")));
+																							console.log(latlng);
+          bounds.extend(latlng);
+          var marker = createMarker(markers[i].getAttribute("Building_Name"), latlng);
+        }//finish loop
+        map.fitBounds(bounds);
+      }); //end downloadurl
 	}
+	function createMarker(information, latlng) {
+	 var marker = new google.maps.Marker({
+													 position: latlng,
+													 map: map
+													 });
+	 google.maps.event.addListener(marker, "click", function() {
+		 if (infowindow) infowindow.close();
+		 infowindow = new google.maps.InfoWindow({content: information});
+		 infowindow.open(map, marker);
+	 });
+	 return marker;*/
+}
 	</script>
 </head>
 <body>
 	<div id="map"></div>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initMap"></script>
+	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>
 </body>
 </html>
