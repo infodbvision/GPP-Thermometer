@@ -20,8 +20,6 @@
 
 	function initialize() {
 		var marker;
-		var image;
-		var markers = [];
 		var mapOptions = {
 			zoom: 8,
 			maxZoom: 15,
@@ -30,10 +28,10 @@
 			mapTypeId: 'roadmap'
 		};
 		var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-		$.ajax({
+/*		$.ajax({
 			type: "GET",
 			async: true,
-			url: "c207.xml",
+			url: "Landmarks.xml",
 			dataType: "xml",
 			success:
 			function (xml) {
@@ -47,32 +45,12 @@
 //			var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 			});
 		}
-	});
-/*	downloadUrl("Landmarks.xml", function(data) {
-        var bounds = new google.maps.LatLngBounds();
-        var markers = data.documentElement.getElementsByTagName("Row");
-        for (var i = 0; i < markers.length; i++) {
-          var latlng = new google.maps.LatLng(parseFloat(markers[i].getAttribute("Latitude")),
-                                              parseFloat(markers[i].getAttribute("Longitude")));
-																							console.log(latlng);
-          bounds.extend(latlng);
-          var marker = createMarker(markers[i].getAttribute("Building_Name"), latlng);
-        }//finish loop
-        map.fitBounds(bounds);
-      }); //end downloadurl
-	}
-	function createMarker(information, latlng) {
-	 var marker = new google.maps.Marker({
-													 position: latlng,
-													 map: map
-													 });
-	 google.maps.event.addListener(marker, "click", function() {
-		 if (infowindow) infowindow.close();
-		 infowindow = new google.maps.InfoWindow({content: information});
-		 infowindow.open(map, marker);
-	 });
-	 return marker;*/
-}
+	});*/
+	var ctaLayer = new google.maps.KmlLayer({
+    url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',
+		map: map
+  });
+ }
 	</script>
 </head>
 <body>
