@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-	<script type="text/javascript" src="downloadxml.js"></script>
+	<script src="geoxml3.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js"></script>
+	<script src="ProjectedOverlay.js"></script>
 	<meta charset="UTF-8">
 	<title>A Basic Map</title>
 	<style>
@@ -16,7 +18,7 @@
 		padding: 0;
 	}
 	</style>
-	<script>
+<!--	<script>
 
 	function initialize() {
 		var marker;
@@ -46,16 +48,36 @@
 			});
 		}
 	});*/
-	var ctaLayer = new google.maps.KmlLayer({
-    url: 'http://googlemaps.github.io/js-v2-samples/ggeoxml/cta.kml',
-		map: map
-  });
+	var ctaLayer = false;
+	function refreshLayer() {
+	if (ctaLayer)
+	    ctaLayer.setMap(null);
+	    ctaLayer = new google.maps.KmlLayer({
+	        url: 'https://sites.google.com/site/kmlfilegpp/kml/c207.kml?attredirects=0&d=1' + (new Date()).getTime(),
+	        map: map
+	    });
+	}
+	setInterval(refreshLayer, 10000);
  }
-	</script>
+	</script>-->
+	<script type="text/javascript">
+	function initialize() {
+
+	            var options = {
+	                center: new google.maps.LatLng(-34.397, 150.644),
+	                mapTypeId: google.maps.MapTypeId.ROADMAP
+	            };
+
+	            var map = new google.maps.Map(document.getElementById("map"), options);
+	            var parser = new geoXML3.parser({map: map, processStyles: true});
+	            parser.parse("c207.kml");
+	        }
+
+	        $(document).ready(initialize);
+</script>
 </head>
 <body>
 	<div id="map"></div>
-	<script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
-	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>
+<!--	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>-->
 </body>
 </html>
