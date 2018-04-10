@@ -3,7 +3,7 @@
 <head>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="geoxml3.js"></script>
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
+<!--	<script src="https://maps.googleapis.com/maps/api/js"></script>-->
 	<script src="ProjectedOverlay.js"></script>
 	<meta charset="UTF-8">
 	<title>A Basic Map</title>
@@ -18,7 +18,7 @@
 		padding: 0;
 	}
 	</style>
-<!--	<script>
+<script>
 
 	function initialize() {
 		var marker;
@@ -30,10 +30,10 @@
 			mapTypeId: 'roadmap'
 		};
 		var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-/*		$.ajax({
+		$.ajax({
 			type: "GET",
 			async: true,
-			url: "Landmarks.xml",
+			url: "c207.xml",
 			dataType: "xml",
 			success:
 			function (xml) {
@@ -47,20 +47,10 @@
 //			var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
 			});
 		}
-	});*/
-	var ctaLayer = false;
-	function refreshLayer() {
-	if (ctaLayer)
-	    ctaLayer.setMap(null);
-	    ctaLayer = new google.maps.KmlLayer({
-	        url: 'https://sites.google.com/site/kmlfilegpp/kml/c207.kml?attredirects=0&d=1' + (new Date()).getTime(),
-	        map: map
-	    });
-	}
-	setInterval(refreshLayer, 10000);
+	});
  }
-	</script>-->
-	<script type="text/javascript">
+	</script>
+<!--	<script type="text/javascript">
 	function initialize() {
 
 	            var options = {
@@ -69,15 +59,14 @@
 	            };
 
 	            var map = new google.maps.Map(document.getElementById("map"), options);
-	            var parser = new geoXML3.parser({map: map, processStyles: true});
-	            parser.parse("c207.kml");
+	            var parser = new geoXML3.parser({map: map});
+	            parser.parse("https://sites.google.com/site/kmlfilegpp/kml/c207.kml?attredirects=0&d=1");
 	        }
-
 	        $(document).ready(initialize);
-</script>
+</script>-->
 </head>
 <body>
 	<div id="map"></div>
-<!--	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>-->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>
 </body>
 </html>
