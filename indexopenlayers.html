@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <style>
+      .map {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
+    <title>OpenLayers example</title>
+  </head>
+  <body>
+    <h2>GPP</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+
+    var projection = ol.proj.get('EPSG:3857');
+
+//    var vector = new ol.layer.Vector({
+//        source: new ol.source.Vector({
+//          url: 'https://sites.google.com/site/kmlfilegpp/kml/cta.kml?attredirects=0&d=1',
+//          format: new ol.format.KML()
+//        })
+//      });
+
+/*      var layers = [
+              new ol.layer.Tile({
+                source: new ol.source.OSM()
+              }),
+              new ol.layer.Image({
+                extent: [-13884991, 2870341, -7455066, 6338219],
+                source: new ol.source.ImageWMS({
+                  url: 'http://172.16.29.41:8080/geoserver/geluidregister/wms?service=WMS&version=1.1.0&request=GetMap&layers=geluidregister:c207_geluidproductieplafonds&styles=&bbox=394143.1875,6578046.5,804491.3125,7063132.5&width=649&height=768&srs=EPSG:900913&format=application/openlayers',
+                  params: {'LAYERS': 'topp:states'},
+                  ratio: 1,
+                  serverType: 'geoserver'
+                })
+              })
+            ];
+            */
+            var layers = [
+              new ol.layer.Tile({
+                source: new ol.source.OSM()
+              }),
+              new ol.layer.Vector({
+                    title: 'added Layer',
+                    source: new ol.source.Vector({
+                       url: 'http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=50&outputFormat=application%2Fjson',
+                       format: new ol.format.GeoJSON()
+                    })
+                })
+            ];
+
+//      var raster = new ol.layer.Tile({
+//              source: new ol.source.OSM({
+//              })
+//            });
+
+      var map = new ol.Map({
+        target: 'map',
+        layers: layers,
+        view: new ol.View({
+          center: ol.proj.fromLonLat([5.0, 52.0]),
+          projection: projection,
+          zoom: 7
+        })
+      });
+    </script>
+  </body>
+</html>
