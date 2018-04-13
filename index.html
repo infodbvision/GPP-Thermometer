@@ -3,7 +3,7 @@
 <head>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script src="geoxml3.js"></script>
-<!--	<script src="https://maps.googleapis.com/maps/api/js"></script>-->
+	<!--	<script src="https://maps.googleapis.com/maps/api/js"></script>-->
 	<script src="ProjectedOverlay.js"></script>
 	<meta charset="UTF-8">
 	<title>A Basic Map</title>
@@ -18,7 +18,7 @@
 		padding: 0;
 	}
 	</style>
-<script>
+	<script>
 
 	function initialize() {
 		var marker;
@@ -39,34 +39,33 @@
 			function (xml) {
 				$(xml).find('Row').each(function(){
 					image = "marker.png";
-						var lat = $(this).find('Latitude').text();
-						var lng = $(this).find('Longitude').text();
-						var markerCoords = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
-						var marker = new google.maps.Marker({position: markerCoords, map:map, icon:image});
-						console.log(markerCoords);
-//			var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
-			});
-		}
-	});
- }
+					var lat = $(this).find('Latitude').text();
+					var lng = $(this).find('Longitude').text();
+					var markerCoords = new google.maps.LatLng(parseFloat(lat), parseFloat(lng));
+					var marker = new google.maps.Marker({position: markerCoords, map:map, icon:image});
+					//			var markerCluster = new MarkerClusterer(map, markers, {imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'});
+				});
+			}
+		});
+	}
 	</script>
-<!--	<script type="text/javascript">
+	<!--	<script type="text/javascript">
 	function initialize() {
 
-	            var options = {
-	                center: new google.maps.LatLng(-34.397, 150.644),
-	                mapTypeId: google.maps.MapTypeId.ROADMAP
-	            };
+	var options = {
+	center: new google.maps.LatLng(-34.397, 150.644),
+	mapTypeId: google.maps.MapTypeId.ROADMAP
+};
 
-	            var map = new google.maps.Map(document.getElementById("map"), options);
-	            var parser = new geoXML3.parser({map: map});
-	            parser.parse("https://sites.google.com/site/kmlfilegpp/kml/c207.kml?attredirects=0&d=1");
-	        }
-	        $(document).ready(initialize);
+var map = new google.maps.Map(document.getElementById("map"), options);
+var parser = new geoXML3.parser({map: map});
+parser.parse("https://sites.google.com/site/kmlfilegpp/kml/c207.kml?attredirects=0&d=1");
+}
+$(document).ready(initialize);
 </script>-->
 </head>
 <body>
 	<div id="map"></div>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_-LVJd5_z6exAoE3HGRLsgNGgKTKQGQM&callback=initialize"></script>
 </body>
 </html>
