@@ -60,7 +60,7 @@
 
 
   const FEATURE_SRC =
-    '//cdn.rawgit.com/jonataswalker/map-utils/master/images/marker.png';
+    'https://raw.githubusercontent.com/jonataswalker/map-utils/master/images/marker.png';
 
   const PROVIDERS = {
     OSM: 'osm',

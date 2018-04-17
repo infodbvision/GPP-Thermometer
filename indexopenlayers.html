@@ -58,7 +58,7 @@
   var features = [];
 
   $.ajax({
-    url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4iykkJLoqBAVRoG8nTXQRYQrTcWPyks5a3eRbwA%3D%3D',  //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+    url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixRqzKWIzABtUE54CNC1LxsYal9eks5a3tmcwA%3D%3D',  //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
     dataType: 'json',
     async: false,
     success: function(json1) {
@@ -75,6 +75,9 @@
       });
     }
   });
+
+//  var id = features.get('id');
+//  console.log(id);
   /*
   var layers = [
   new ol.layer.Tile({
@@ -102,6 +105,7 @@ var clusterSource = new ol.source.Cluster({
 
 var raster = new ol.layer.Tile({
   source: new ol.source.OSM({
+      preload: 8
   })
 });
 
@@ -110,6 +114,8 @@ var clusters = new ol.layer.Vector({
   source: clusterSource,
   style: function(feature) {
     var size = feature.get('features').length;
+    var id = feature.get('id');
+    console.log(id);
     var style = styleCache[size];
     if (!style) {
       style = new ol.style.Style({
@@ -150,25 +156,25 @@ var map = new ol.Map({
 map.on('singleclick', function(evt) {
   map.forEachFeatureAtPixel(evt.pixel, function (feature, layer){
         var coordinate = evt.coordinate;
-        var id = evt.feature.getID();
+//        var id = feature.getID();
         var hdms = ol.coordinate.toStringHDMS(coordinate);
 
         content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-            '</code>' + ' has id: ' + id;
+            '</code>' + ' has id: ';
         overlay.setPosition(coordinate);
         })
       });
 
 map.addControl(geocoder);
 
-geocoder.on('addresschosen', function(evt){
+/*geocoder.on('addresschosen', function(evt){
   var feature = evt.feature,
       coord = evt.coordinate,
       address = evt.address;
       content.innerHTML = '<p>'+ address.formatted + '</p>';
       console.log(feature);
   overlay.setPosition(coord);
-});
+});*/
 </script>
 </body>
 </html>
