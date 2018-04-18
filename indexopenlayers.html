@@ -47,7 +47,7 @@
               lang: 'nl-NL',
               autoComplete: true,
               autoCompleteMinLength: 3,
-              placeholder: 'Vul hier uw postcode in',
+              placeholder: 'Vul hier uw postcode of adres in',
               targetType: 'text-input',
               limit: 5,
               countrycodes: 'nl',
@@ -55,8 +55,8 @@
               preventDefault: false
             });
 
-  var features = [];
-
+var features = [];
+var id;
   $.ajax({
     url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixRqzKWIzABtUE54CNC1LxsYal9eks5a3tmcwA%3D%3D',  //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
     dataType: 'json',
@@ -65,19 +65,23 @@
       $.each(json1, function (key, data) {
         if (key == 'features') {
           $.each(data, function (k, v) {
-            if (v.type=='Feature') {
+            if (v.type =='Feature') {
               if (v.geometry.coordinates.length>1) {
-                features[k] = new ol.Feature(new ol.geom.Point(v.geometry.coordinates));
+                features[k] = new ol.Feature({
+                  geometry: new ol.geom.Point(v.geometry.coordinates),
+                  id: 123 //v.properties.id
+                });
+          //      features[0].setId(v.properties.id);
               }
             }
-          });
+  //          console.log(id);
+          }); //hiertussen gaat iets mis
+          console.log(id);
         }
       });
     }
   });
 
-//  var id = features.get('id');
-//  console.log(id);
   /*
   var layers = [
   new ol.layer.Tile({
@@ -114,8 +118,6 @@ var clusters = new ol.layer.Vector({
   source: clusterSource,
   style: function(feature) {
     var size = feature.get('features').length;
-    var id = feature.get('id');
-    console.log(id);
     var style = styleCache[size];
     if (!style) {
       style = new ol.style.Style({
@@ -149,16 +151,15 @@ var map = new ol.Map({
     center: [568744.996128, 6816229.956732],
     zoom: 8,
     minZoom: 8,
-    maxZoom: 17,
+    maxZoom: 16,
   })
 });
 
 map.on('singleclick', function(evt) {
   map.forEachFeatureAtPixel(evt.pixel, function (feature, layer){
         var coordinate = evt.coordinate;
-//        var id = feature.getID();
         var hdms = ol.coordinate.toStringHDMS(coordinate);
-
+        console.log(id);
         content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
             '</code>' + ' has id: ';
         overlay.setPosition(coordinate);
