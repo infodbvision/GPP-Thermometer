@@ -135,8 +135,8 @@
   }
 
   function flyTo(map, coord, duration, resolution) {
-    resolution = resolution || 10;
-    duration = duration || 1000;
+    resolution = resolution || 6;
+    duration = duration || 500;
     map.getView().animate(
       { duration: duration, resolution: resolution },
       { duration: duration, center: coord }
@@ -1003,26 +1003,26 @@
       } else {
         flyTo(map, coord);
       }
-      const feature = this.createFeature(coord, address);
+//      const feature = this.createFeature(coord, address);
 
       this.Base.dispatchEvent({
         type: EVENT_TYPE.ADDRESSCHOSEN,
         address: address,
-        feature: feature,
+//        feature: feature,
         coordinate: coord,
         bbox: bbox
       });
     }
   };
 
-  Nominatim.prototype.createFeature = function createFeature (coord) {
+/*  Nominatim.prototype.createFeature = function createFeature (coord) {
     const feature = new Feature(new Point(coord));
     this.addLayer();
     feature.setStyle(this.options.featureStyle);
     feature.setId(randomId('geocoder-ft-'));
     this.getSource().addFeature(feature);
     return feature;
-  };
+  };*/
 
   Nominatim.prototype.addressTemplate = function addressTemplate (address) {
     let html = [];

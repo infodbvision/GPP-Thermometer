@@ -1,181 +1,243 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
-  <link rel="stylesheet" type="text/css" href="styles.css">
-  <style>
-  .map {
-    height: 100%;
-    width: 100%;
-  }
-  </style>
-  <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-  <link href="ol-geocoder.min.css" rel="stylesheet">
-  <script src="ol-geocoder-debug.js"></script>
-  <title>OpenLayers example</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        .map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+    <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link href="ol-geocoder.min.css" rel="stylesheet">
+    <script src="ol-geocoder-debug.js"></script>
+    <title>OpenLayers example</title>
 </head>
+
 <body>
-  <h2>GPP</h2>
-  <div id="map" class="map"></div>
-  <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-      <div id="popup-content"></div>
+  <!-- Sidebar -->
+<div class="w3-sidebar w3-bar-block w3-white w3-animate-left" style="display:none;z-index:4" id="mySidebar">
+  <button class="w3-bar-item w3-button" onclick="w3_close()">Close</button>
+
+  <div class="w3-bar w3-black">
+  <button class="w3-bar-item w3-button" onclick="openTab('Locatie')">London</button>
+  <button class="w3-bar-item w3-button" onclick="openTab('Wetgeving')">Paris</button>
+  <button class="w3-bar-item w3-button" onclick="openTab('Geluid')">Tokyo</button>
+</div>
+
+  <div id="Locatie" class="tabs" style="display:none">
+  <p>ID: <span id = "id"></span></p>
+  <p>X-coördinaat (RD): </p>
+  <p>Y-coördinaat (RD): </p>
+  <p>Hoogte referentiepunt t.o.v. maaiveld: </p>
+</div>
+
+  <div id="Wetgeving" class="tabs" style="display:none">
+  <p>Artikel: <span id = "artikel"></span></p>
+  <p>Plafondcorrectiewaarde: </p>
+  <p>Besluit: </p>
+  <p>Ingangsdatum: </p>
+</div>
+
+  <div id="Geluid" class="tabs">
+  <p>Geluidproductieplafond: </p>
+  <p>Geluidproductie Realtime: </p>
+  <p>Geluidruimte Realtime: </p>
+  <p>Voorspelde totale geluidproductie: </p>
+  <p>Buiten bedrijf: </p>
+  <p>Laatste meting: </p>
+  <!-- google graph -->
+</div>
+
+<div class="w3-overlay" onclick="w3_close()" style="cursor:pointer"></div>
+
+<div class="w3-overlay w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" id="myOverlay"></div>
+</div>
+
+    <h2>GPP</h2>
+    <div id="map" class="map"></div>
+    <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
     </div>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
+    var id;
 
-  var container = document.getElementById('popup');
-      var content = document.getElementById('popup-content');
-      var closer = document.getElementById('popup-closer');
+    function openTab(tabName) {
+    var i;
+    var x = document.getElementsByClassName("tabs");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";
+    }
+    document.getElementById(tabName).style.display = "block";
+}
 
-      var overlay = new ol.Overlay({
-        element: container,
-        autoPan: true,
-        autoPanAnimation: {
-          duration: 25
-        }
-      });
-      closer.onclick = function() {
-              overlay.setPosition(undefined);
-              closer.blur();
-              return false;
-            };
+    function w3_open() {
+      document.getElementById("mySidebar").style.display = "block";
+      document.getElementById("myOverlay").style.display = "block";
+    }
 
-  var geocoder = new Geocoder('nominatim', {
-              provider: 'osm',
-              lang: 'nl-NL',
-              autoComplete: true,
-              autoCompleteMinLength: 3,
-              placeholder: 'Vul hier uw postcode of adres in',
-              targetType: 'text-input',
-              limit: 5,
-              countrycodes: 'nl',
-              keepOpen: false,
-              preventDefault: false
-            });
+    function w3_close() {
+      document.getElementById("mySidebar").style.display = "none";
+      document.getElementById("myOverlay").style.display = "none";
+    }
+        var container = document.getElementById('popup');
+        var content = document.getElementById('popup-content');
+        var closer = document.getElementById('popup-closer');
 
-var features = [];
-var id;
-  $.ajax({
-    url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixRqzKWIzABtUE54CNC1LxsYal9eks5a3tmcwA%3D%3D',  //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
-    dataType: 'json',
-    async: false,
-    success: function(json1) {
-      $.each(json1, function (key, data) {
-        if (key == 'features') {
-          $.each(data, function (k, v) {
-            if (v.type =='Feature') {
-              if (v.geometry.coordinates.length>1) {
-                features[k] = new ol.Feature({
-                  geometry: new ol.geom.Point(v.geometry.coordinates),
-                  id: 123 //v.properties.id
-                });
-          //      features[0].setId(v.properties.id);
-              }
+        var overlay = new ol.Overlay({
+            element: container,
+            autoPan: true,
+            autoPanAnimation: {
+                duration: 1
             }
-  //          console.log(id);
-          }); //hiertussen gaat iets mis
-          console.log(id);
-        }
-      });
-    }
-  });
+        });
+        closer.onclick = function() {
+            overlay.setPosition(undefined);
+            closer.blur();
+            return false;
+        };
 
-  /*
-  var layers = [
-  new ol.layer.Tile({
-  source: new ol.source.OSM()
-}),
-new ol.layer.Image({
-extent: [-13884991, 2870341, -7455066, 6338219],
-source: new ol.source.ImageWMS({
-url: 'http://172.16.29.41:8080/geoserver/geluidregister/wms?service=WMS&version=1.1.0&request=GetMap&layers=geluidregister:c207_geluidproductieplafonds&styles=&bbox=394143.1875,6578046.5,804491.3125,7063132.5&width=649&height=768&srs=EPSG:900913&format=application/openlayers',
-params: {'LAYERS': 'geluidregister:c207_geluidproductieplafonds'},
-ratio: 1,
-serverType: 'geoserver'
-})
-})
-];*/
+        var geocoder = new Geocoder('nominatim', {
+            provider: 'osm',
+            lang: 'nl-NL',
+            autoComplete: true,
+            autoCompleteMinLength: 3,
+            placeholder: 'Vul hier uw postcode of adres in',
+            targetType: 'text-input',
+            limit: 7,
+            countrycodes: 'nl',
+            keepOpen: false,
+            preventDefault: false
+        });
 
-var source = new ol.source.Vector({
-  features: features
-});
+        var features = [];
 
-var clusterSource = new ol.source.Cluster({
-  distance: 12,
-  source: source
-});
+        $.ajax({
+            url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixRqzKWIzABtUE54CNC1LxsYal9eks5a3tmcwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+            dataType: 'json',
+            async: false,
+            success: function(json1) {
+                $.each(json1, function(key, data) {
+                    if (key == 'features') {
+                        $.each(data, function(k, v) {
+                            if (v.type == 'Feature') {
+                                if (v.geometry.coordinates.length > 1) {
+                                    features[k] = new ol.Feature({
+                                        geometry: new ol.geom.Point(v.geometry.coordinates),
+                                        id: v.properties.id,
+                                        artikel: v.properties.artikel
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM({
-      preload: 8
-  })
-});
-
-var styleCache = {};
-var clusters = new ol.layer.Vector({
-  source: clusterSource,
-  style: function(feature) {
-    var size = feature.get('features').length;
-    var style = styleCache[size];
-    if (!style) {
-      style = new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 10,
-          stroke: new ol.style.Stroke({
-            color: '#fff'
-          }),
-          fill: new ol.style.Fill({
-            color: '#3399CC'
-          })
+        /*
+          var layers = [
+          new ol.layer.Tile({
+          source: new ol.source.OSM()
         }),
-        text: new ol.style.Text({
-          text: size.toString(),
-          fill: new ol.style.Fill({
-            color: '#fff'
-          })
+        new ol.layer.Image({
+        extent: [-13884991, 2870341, -7455066, 6338219],
+        source: new ol.source.ImageWMS({
+        url: 'http://172.16.29.41:8080/geoserver/geluidregister/wms?service=WMS&version=1.1.0&request=GetMap&layers=geluidregister:c207_geluidproductieplafonds&styles=&bbox=394143.1875,6578046.5,804491.3125,7063132.5&width=649&height=768&srs=EPSG:900913&format=application/openlayers',
+        params: {'LAYERS': 'geluidregister:c207_geluidproductieplafonds'},
+        ratio: 1,
+        serverType: 'geoserver'
         })
-      });
-      styleCache[size] = style;
-    }
-    return style;
-  }
-});
-
-var map = new ol.Map({
-  target: 'map',
-  layers: [raster, clusters],
-  overlays: [overlay],
-  view: new ol.View({
-    center: [568744.996128, 6816229.956732],
-    zoom: 8,
-    minZoom: 8,
-    maxZoom: 16,
-  })
-});
-
-map.on('singleclick', function(evt) {
-  map.forEachFeatureAtPixel(evt.pixel, function (feature, layer){
-        var coordinate = evt.coordinate;
-        var hdms = ol.coordinate.toStringHDMS(coordinate);
-        console.log(id);
-        content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
-            '</code>' + ' has id: ';
-        overlay.setPosition(coordinate);
         })
-      });
+        ];*/
 
-map.addControl(geocoder);
+        var source = new ol.source.Vector({
+            features: features
+        });
 
-/*geocoder.on('addresschosen', function(evt){
-  var feature = evt.feature,
-      coord = evt.coordinate,
-      address = evt.address;
-      content.innerHTML = '<p>'+ address.formatted + '</p>';
-      console.log(feature);
-  overlay.setPosition(coord);
-});*/
-</script>
+        var clusterSource = new ol.source.Cluster({
+            distance: 12,
+            source: source
+        });
+
+        var raster = new ol.layer.Tile({
+            source: new ol.source.OSM({
+                preload: 8
+            })
+        });
+
+        var styleCache = {};
+        var clusters = new ol.layer.Vector({
+            source: clusterSource,
+            style: function(feature) {
+                var size = feature.get('features').length;
+                var style = styleCache[size];
+                if (!style) {
+                    style = new ol.style.Style({
+                        image: new ol.style.Circle({
+                            radius: 10,
+                            stroke: new ol.style.Stroke({
+                                color: '#fff'
+                            }),
+                            fill: new ol.style.Fill({
+                                color: '#3399CC'
+                            })
+                        }),
+                        text: new ol.style.Text({
+                            text: size.toString(),
+                            fill: new ol.style.Fill({
+                                color: '#fff'
+                            })
+                        })
+                    });
+                    styleCache[size] = style;
+                }
+                return style;
+            }
+        });
+
+        var map = new ol.Map({
+            target: 'map',
+            layers: [raster, clusters],
+            overlays: [overlay],
+            view: new ol.View({
+                center: [568744.996128, 6816229.956732],
+                zoom: 8,
+                minZoom: 8,
+                maxZoom: 16,
+            })
+        });
+
+        map.on('singleclick', function(evt) {
+            map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
+                var coordinate = evt.coordinate;
+                var featurelist = feature.N.features;
+                if (featurelist.length > 0) {
+                    for (var i = 0, ii = featurelist.length; i < ii; ++i) {
+                        id = featurelist[i].N.id;
+                        artikel = featurelist[i].N.artikel;
+                        if (featurelist.length < 2) {
+                            w3_open();
+                            content.innerHTML = '<p>Klik op de knop voor extra informatie</p>' + '<button onclick="w3_open()">Data</button>';
+                        } else {
+                          content.innerHTML = 'U heeft ' + featurelist.length + ' punten aangeklikt. Voor meer informatie zoom in en klik één punt aan.';
+                          overlay.setPosition(coordinate);
+                        }
+                        document.getElementById("id").innerHTML = id;
+                        document.getElementById("artikel").innerHTML = artikel;
+                    }
+                }
+            })
+        });
+
+        map.addControl(geocoder);
+    </script>
 </body>
+
 </html>
