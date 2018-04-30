@@ -47,11 +47,7 @@ limitations under the License.
   * Handles the sign in button press.
   */
   function toggleSignIn() {
-    if (firebase.auth().currentUser) {
-      // [START signout]
-      firebase.auth().signOut();
-      // [END signout]
-    } else {
+      var user = firebase.auth().currentUser;
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
       if (email.length == 0) {
@@ -62,6 +58,16 @@ limitations under the License.
         alert('Please enter a password.');
         return;
       }
+      if (user) {
+        console.log(user);
+        if (!user.emailVerified) {
+  //          document.getElementById('quickstart-verify-email').disabled = false;
+  //        alert("verify de email");
+        }
+        else {
+          window.location = "indexopenlayers.html"
+        }
+  }
       // Sign in with email and pass.
       // [START authwithemail]
       firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
@@ -75,18 +81,22 @@ limitations under the License.
           alert(errorMessage);
         }
         console.log(error);
-        document.getElementById('quickstart-sign-in').disabled = false;
+//        document.getElementById('quickstart-sign-in').disabled = false;
         // [END_EXCLUDE]
       });
       // [END authwithemail]
 
-    }
-    document.getElementById('quickstart-sign-in').disabled = true;
+//    document.getElementById('quickstart-sign-in').disabled = true;
   }
   /**
   * Sends an email verification to the user.
   */
   function sendEmailVerification() {
+    var email = document.getElementById('email').value;
+    if (email.length == 0) {
+      alert('Please enter an email address.');
+      return;
+    }
     // [START sendemailverification]
     firebase.auth().currentUser.sendEmailVerification().then(function() {
       // Email Verification sent!
@@ -128,25 +138,42 @@ limitations under the License.
     // Listening for auth state changes.
     // [START authstatelistener]
     firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+          if (!user.emailVerified) {
+            var snackbarContainer = document.querySelector('#demo-snackbar-example');
+            var showSnackbarButton = document.querySelector('#quickstart-sign-in');
+            var handler = function(event) {
+              showSnackbarButton.style.backgroundColor = '';
+            };
+            showSnackbarButton.addEventListener('click', function() {
+              var data = {
+                message: 'Please verify your email.',
+                timeout: 2000
+              };
+              snackbarContainer.MaterialSnackbar.showSnackbar(data);
+            });
+    //          document.getElementById('quickstart-verify-email').disabled = false;
+    //        alert("verify de email");
+          }
+          else {
+            window.location = "indexopenlayers.html"
+          }
+    }
       // [START_EXCLUDE silent]
-      document.getElementById('quickstart-verify-email').disabled = true;
+//      document.getElementById('quickstart-verify-email').disabled = true;
       // [END_EXCLUDE]
-      if (user) {
-        var emailVerified = user.emailVerified;
-        if (!emailVerified) {
-          document.getElementById('quickstart-verify-email').disabled = false;
-          //alert("verify de email");
-        } else {
-          window.location = "indexopenlayers.html"
-        }
         // [END_EXCLUDE]
-      }
       // [START_EXCLUDE silent]
-      document.getElementById('quickstart-sign-in').disabled = false;
+//      document.getElementById('quickstart-sign-in').disabled = false;
       // [END_EXCLUDE]
     });
     // [END authstatelistener]
     document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+    document.getElementById('password').onkeydown = function(event) {
+    if (event.keyCode == 13) {
+        toggleSignIn();
+      }
+    }
     document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
     document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
   }
@@ -176,22 +203,27 @@ limitations under the License.
             <h2 class="mdl-card__title-text">Firebase Email &amp; Password Authentication</h2>
           </div>
           <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <p>Enter your email and password below and sign in</p>
+            <p>Enter your email and password below and sign in.<b> Don't forget to verify your email or you can't login</b></p>
 
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email" placeholder="Email"/>
             &nbsp;&nbsp;&nbsp;
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Password"/>
             <br/><br/>
-            <button disabled class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-sign-in" name="signin">Sign In</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-sign-in" name="signin">Sign In</button>
             &nbsp;&nbsp;&nbsp;
-            <button class="mdl-button mdl-js-button mdl-button--raised" disabled id="quickstart-verify-email" name="verify-email">Send Email Verification</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-verify-email" name="verify-email">Send Email Verification</button>
             &nbsp;&nbsp;&nbsp;
             <button class="mdl-button mdl-js-button mdl-button--raised" id="quickstart-password-reset" name="verify-email">Send Password Reset Email</button>
+            &nbsp;&nbsp;&nbsp;
+            <button onclick="location.href='register.html';" class="mdl-button mdl-js-button mdl-button--raised" id="register" name="register">Registreren</button>
           </div>
         </div>
-
       </div>
     </main>
   </div>
+  <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+  <div class="mdl-snackbar__text"></div>
+  <button class="mdl-snackbar__action" type="button"></button>
+</div>
 </body>
 </html>
