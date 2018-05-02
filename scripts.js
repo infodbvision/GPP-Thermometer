@@ -3,7 +3,6 @@ var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 
 var features = [];
-
 $.ajax({
   url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i6neXfWUZpGXNpmo7EJwXSV843BCks5a8WJDwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
@@ -322,7 +321,6 @@ map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
 });
 
 map.addControl(geocoder);
-
 function openTab(evt, Tabname) {
   var i;
   var tablinks;

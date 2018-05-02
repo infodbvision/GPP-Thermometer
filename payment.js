@@ -9,31 +9,18 @@ function initPaymentRequest() {
  supportedMethods: 'basic-card',
  data: {
    supportedNetworks: ['amex', 'diners', 'discover', 'jcb', 'mastercard', 'unionpay', 'visa', 'mir']
-  // supportedTypes: ['debit', 'credit', 'prepaid']
  }
 }];
 
-
-/*  let networks = ['amex', 'diners', 'discover', 'jcb', 'mastercard', 'unionpay',
-      'visa', 'mir'];
-  let types = ['debit', 'credit', 'prepaid'];
-  let supportedInstruments = [{
-    supportedMethods: networks,
-  }, {
-    supportedMethods: 'basic-card',
-    data: {supportedNetworks: networks, supportedTypes: types},
-  }];*/
-
-
   let details = {
-    total: {label: 'Donation', amount: {currency: 'EUR', value: '55.00'}},
+    total: {label: 'Punt', amount: {currency: 'EUR', value: '55.00'}},
     displayItems: [
       {
-        label: 'Original donation amount',
+        label: 'Prijs Punt',
         amount: {currency: 'EUR', value: '65.00'},
       },
       {
-        label: 'Friends and family discount',
+        label: 'Korting',
         amount: {currency: 'EUR', value: '-10.00'},
       },
     ],
