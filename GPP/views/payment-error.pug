@@ -1,0 +1,7 @@
+extends layout
+
+block content
+  h1 Something went wrong
+  p  error type: #{error.type}
+  p  error message: #{error.message}
+  a(href=error.links.documentation) more

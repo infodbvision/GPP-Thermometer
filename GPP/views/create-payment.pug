@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	.container
+		h3 Payment Confirmation
+		p this is your order details:
+
+		p= payment.description
+		p= payment.amount
+
+		a(href=payment.links.paymentUrl).btn.btn-primary Checkout with iDeal

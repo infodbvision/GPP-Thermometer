@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	.container
+		h3 Payment Status
+		p Your payment with iDeal was:
+
+		p= payment.status
+		
+		p You purchased an #{payment.description} for #{payment.amount}
+
+		a(href='/').btn.btn-primary Back to store
