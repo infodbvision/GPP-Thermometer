@@ -14,11 +14,14 @@ router.get('/',function(req, res) {
         if (payment.error) {
           console.error(payment.error);
           res.render('payment-error', { 'error': payment.error });
-        }else {
+        }
+        if (payment.isPaid()) {
 
-            console.log(payment.status);
             res.render('executed-payment', { 'payment': payment });
 
+        } else if(!payment.isOpen()){
+          console.log("aborted");
+          res.render('aborted');
         }
 
 

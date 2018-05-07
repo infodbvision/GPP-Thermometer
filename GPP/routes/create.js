@@ -10,7 +10,7 @@ router.get('/',function(req, res) {
 
 	var sess = req.session
 
-    redirectUrl = "http://localhost:3000/execute";
+    redirectUrl = "http://" + req.headers.host + "/execute";
 
 
     var payment = {
