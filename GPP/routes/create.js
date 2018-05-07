@@ -14,8 +14,8 @@ router.get('/',function(req, res) {
 
 
     var payment = {
-    	amount: req.param('amount'),
-    	description: "Awesome bike 1",
+    	amount: 20,
+    	description: req.param('description'),
     	redirectUrl: redirectUrl,
     	method: "ideal"
     };

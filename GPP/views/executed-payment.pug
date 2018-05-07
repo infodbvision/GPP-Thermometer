@@ -2,11 +2,11 @@ extends layout
 
 block content
 	.container
-		h3 Payment Status
-		p Your payment with iDeal was:
+		h3 Betaal status
+		p Uw betaling met iDeal was:
 
 		p= payment.status
-		
-		p You purchased an #{payment.description} for #{payment.amount}
 
-		a(href='/').btn.btn-primary Back to store
+		p U kocht Punt: #{payment.description} voor #{payment.amount}
+
+		a(href='/').btn.btn-primary Terug naar Kaart

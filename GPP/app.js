@@ -24,7 +24,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
 var create = require('./routes/create');
 var executed = require('./routes/executed');
 
@@ -45,9 +44,6 @@ app.use(cookieParser());
 app.use(session({secret: 'super secret',saveUninitialized: false, resave: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-
-
-app.use('/index', routes);
 app.use('/create', create);
 app.use('/execute', executed);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/public/indexopenlayers.html')))

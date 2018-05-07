@@ -1,10 +1,11 @@
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
+var id;
 
 var features = [];
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i6neXfWUZpGXNpmo7EJwXSV843BCks5a8WJDwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixAt-2nrLJ9PqyqkyiTjYw-wGn7Uks5a-UUdwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
@@ -309,6 +310,8 @@ map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
       }
     })
             wrapperper.draw();
+            content.innerHTML = 'Klik op de knop om dit punt te kopen <button onclick="betaalLink()">Koop</button>';
+            overlay.setPosition(coordinate);
           }
       } else {
         content.innerHTML = 'U heeft ' + featurelist.length + ' punten aangeklikt. Voor meer informatie zoom in en klik één punt aan.';

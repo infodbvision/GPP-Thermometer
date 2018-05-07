@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <link rel="stylesheet" type="text/css" href="https://raw.githubusercontent.com/Meesgieling/performance/master/GPP/public/stylesheets/styles.css?token=ALZ4i33cpl5BbgjHjwWbyi6FpMRSk5qUks5a-WQqwA%3D%3D">
   <style>
   .map {
     height: 790px;
@@ -29,8 +29,8 @@
   <script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <link rel="stylesheet" href="ol-geocoder.min.css" type="text/css">
-  <script type="text/javascript" src="/ol-geocoder-debug.js"></script>
+  <link rel="stylesheet" href="https://raw.githubusercontent.com/Meesgieling/performance/master/GPP/public/stylesheets/ol-geocoder.min.css?token=ALZ4i3rzOWclQcoIoTXOZgU5bpFkXgI0ks5a-WRCwA%3D%3D" type="text/css">
+  <script type="text/javascript" src="https://raw.githubusercontent.com/Meesgieling/performance/master/GPP/public/javascripts/ol-geocoder-debug.js?token=ALZ4i3tehqgz01OHmhkQdDzSPmlnAHVWks5a-WRqwA%3D%3D"></script>
   <title>OpenLayers example</title>
   <script>
   function logOut(){
@@ -49,6 +49,9 @@
       window.location = "login.html";
     }
   });
+function betaalLink(){
+  location.href = "create?description=" + id;
+}
 </script>
 </head>
 
@@ -57,7 +60,7 @@
     <a href="#" class="w3-bar-item w3-button material-icons w3-hover-text-black w3-hover-none" onclick="window.location = 'indexopenlayers.html';">home</a>
     <a href="#" class="w3-bar-item w3-button w3-hover-text-black w3-hover-none" onclick="logOut()">Logout</a>
     <a class="w3-bar-item">Welkom <span id = "displayName"></span></a>
-    <a id="buyButton" class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none">shopping_cart</a>
+    <a class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none">shopping_cart</a>
   </div>
 
   <div class="w3-row-padding" style="padding-top:10px;">
@@ -95,12 +98,9 @@
         <p>Buiten bedrijf: <span id = "percentage_fout" style="float:right;"></span></p>
         <p>Laatste meting: <span id = "laatste_meting" style="float:right;"></span></p>
         <div id="linechart_material" style="width: 100%; height: 100%"></div>
-        <button onclick="location.href = 'index';">Koop</button>
       </div>
-    <P id="result"></p>
     </div>
   </div>
-  <script type="text/javascript" src="/scripts.js"></script>
-  <script type="text/javascript" src="/payment.js"></script>
+  <script type="text/javascript" src="https://raw.githubusercontent.com/Meesgieling/performance/master/GPP/public/javascripts/scripts.js?token=ALZ4i6YdKs1HqOKrH0bmmH49E6Y4FH82ks5a-WR-wA%3D%3D"></script>
 </body>
 </html>

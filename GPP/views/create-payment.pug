@@ -2,10 +2,11 @@ extends layout
 
 block content
 	.container
-		h3 Payment Confirmation
-		p this is your order details:
-
+		h3 Betaal Check
+		p Dit zijn uw order details:
+		p Punt:
 		p= payment.description
+		p Prijs:
 		p= payment.amount
 
-		a(href=payment.links.paymentUrl).btn.btn-primary Checkout with iDeal
+		a(href=payment.links.paymentUrl) Betaal met iDeal

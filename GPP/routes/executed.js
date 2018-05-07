@@ -16,7 +16,7 @@ router.get('/',function(req, res) {
           res.render('payment-error', { 'error': payment.error });
         }else {
 
-
+            console.log(payment.status);
             res.render('executed-payment', { 'payment': payment });
 
         }
