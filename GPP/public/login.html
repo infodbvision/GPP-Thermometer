@@ -26,6 +26,7 @@
     messagingSenderId: "639524050247"
   };
   firebase.initializeApp(config);
+  var database = firebase.database();
   </script>
 
   <script type="text/javascript">
@@ -36,6 +37,7 @@
       var user = firebase.auth().currentUser;
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
+      var usersRef = firebase.database().ref("users");
       if (email.length == 0) {
         alert('Please enter an email address.');
         return;
@@ -45,8 +47,20 @@
         return;
       }
       if (user) {
-        console.log(user);
+        email = user.email;
+        displayName = user.displayName;
+        emailVerified = user.emailVerified;
+        usersRef.child(user.uid).set({
+          email: email,
+          displayName: displayName,
+          emailVerified: emailVerified
+        });
         if (!user.emailVerified) {
+          firebase.auth().signOut().then(function() {
+            // Sign-out successful.
+          }).catch(function(error) {
+            // An error happened.
+          });
   //          document.getElementById('quickstart-verify-email').disabled = false;
   //        alert("verify de email");
         }
@@ -71,6 +85,7 @@
       });
       // [END authwithemail]
   }
+
   /**
   * Sends an email verification to the user.
   */
@@ -112,6 +127,14 @@
     });
     // [END sendpasswordemail];
   }
+
+  function logOut(){
+    firebase.auth().signOut().then(function() {
+      // Sign-out successful.
+    }).catch(function(error) {
+      // An error happened.
+    });
+  }
   /**
   * initApp handles setting up UI event listeners and registering Firebase auth listeners:
   *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
@@ -123,6 +146,13 @@
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
           if (!user.emailVerified) {
+
+            firebase.auth().signOut().then(function() {
+              // Sign-out successful.
+            }).catch(function(error) {
+              // An error happened.
+            });
+
             var snackbarContainer = document.querySelector('#snackbar');
             var showSnackbarButton = document.querySelector('#sign-in');
             var handler = function(event) {
@@ -190,6 +220,7 @@
             <button class="mdl-button mdl-js-button mdl-button--raised" id="password-reset" name="verify-email">Send Password Reset Email</button>
             &nbsp;&nbsp;&nbsp;
             <button onclick="location.href='register.html';" class="mdl-button mdl-js-button mdl-button--raised" id="register" name="register">Registreren</button>
+            <button onclick="logOut()"></button>
           </div>
         </div>
       </div>
