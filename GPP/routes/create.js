@@ -1,13 +1,16 @@
 var express = require('express');
 var router = express.Router();
 var Mollie = require('mollie-api-node');
+var firebase = require("firebase");
+var admin = require("firebase-admin");
+
+require('firebase/auth');
+require('firebase/database');
 
 var mollie = new Mollie.API.Client;
     mollie.setApiKey('test_3xP42vez8w5sbeaH2utVkSJ42SfWBW');
 
-
 router.get('/',function(req, res) {
-
 	var sess = req.session
 
     redirectUrl = "http://" + req.headers.host + "/execute";

@@ -2,7 +2,16 @@ var express = require('express');
 var router = express.Router();
 var Mollie = require('mollie-api-node');
 var firebase = require("firebase");
+var admin = require("firebase-admin");
 require('firebase/auth');
+require('firebase/database');
+
+var serviceAccount = require("C:/Users/Mees Gieling/Github/performance/GPP/gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://gppthermometer.firebaseio.com"
+});
 
 var mollie = new Mollie.API.Client;
     mollie.setApiKey('test_3xP42vez8w5sbeaH2utVkSJ42SfWBW');
@@ -20,14 +29,8 @@ var mollie = new Mollie.API.Client;
     var db = firebase.database();
     //sets the reference to the root of the database, or the server I'm not quite sure.
     //var ref = db.ref("/");
-firebase.auth().onAuthStateChanged(function(user) {
-  console.log(user);
-});
 router.get('/',function(req, res) {
-
     var paymentId = req.session.paymentId;
-    var user = firebase.auth().currentUser;
-    console.log(user);
     mollie.payments.get(paymentId, function(payment) {
         if (payment.error) {
           console.error(payment.error);
@@ -36,29 +39,22 @@ router.get('/',function(req, res) {
         if (payment.isPaid()) {
           var paymentStatus;
           var paymentDescription;
-  //      if(user){
-          console.log(user);
+          var idToken = req.cookies['idToken'];
           paymentStatus = payment.status;
           paymentDescription = payment.description;
           var usersRef = firebase.database().ref("users");
 
-          usersRef.child("K7gJyPuUkdMpjq5DRZoGxcdmYpu2" + "/payments").push({
-            paymentStatus: paymentStatus,
-            PuntID: paymentDescription
-          });
-    //    }
-
-/*
-          var user = firebase.auth().currentUser;
-            var usersRef = firebase.database().ref("users");
-            console.log(usersRef);
-            if(user){
-              usersRef.child(user.uid).set({
-                betaald: "ja"
+          admin.auth().verifyIdToken(idToken)
+            .then(function(decodedToken) {
+              var uid = decodedToken.uid;
+              console.log("USER ID IS: " + uid);
+              usersRef.child(uid + "/payments").push({
+                paymentStatus: paymentStatus,
+                PuntID: paymentDescription
               });
-          }*/
-  //console.log(paymentDescription);
-  //console.log(paymentStatus);
+            }).catch(function(error) {
+              console.log(error);
+            });
 
             res.render('executed-payment', { 'payment': payment });
 

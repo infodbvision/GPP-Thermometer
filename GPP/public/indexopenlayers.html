@@ -41,17 +41,23 @@
       // An error happened.
     });
   }
-
   firebase.auth().onAuthStateChanged(function(user) {
-    console.log(user);
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
     if (user && user.emailVerified == true) {
       document.getElementById("displayName").innerHTML = user.displayName;
     } else {
       window.location = "login.html";
     }
   });
+});
+
 function betaalLink(){
-  location.href = "create?description=" + id;
+  firebase.auth().onAuthStateChanged(function(user) {
+    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+  var cookie = document.cookie = idToken;
+location.href = "create?description=" + id;
+  });
+});
 }
 </script>
 </head>
