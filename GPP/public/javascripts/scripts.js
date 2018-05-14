@@ -5,7 +5,7 @@ var id;
 
 var features = [];
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4ixAt-2nrLJ9PqyqkyiTjYw-wGn7Uks5a-UUdwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i19vW-kwy7ttgLcxqW-F1VSNeEJJks5bAqVywA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {

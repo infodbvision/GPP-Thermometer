@@ -49,7 +49,6 @@ router.get('/',function(req, res) {
               var uid = decodedToken.uid;
               console.log("USER ID IS: " + uid);
               usersRef.child(uid + "/payments").push({
-                paymentStatus: paymentStatus,
                 PuntID: paymentDescription
               });
             }).catch(function(error) {
@@ -59,7 +58,6 @@ router.get('/',function(req, res) {
             res.render('executed-payment', { 'payment': payment });
 
         } else if(!payment.isOpen()){
-          console.log("aborted");
           res.render('aborted');
         }
 

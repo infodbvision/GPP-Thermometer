@@ -37,7 +37,6 @@
       var user = firebase.auth().currentUser;
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
-      var usersRef = firebase.database().ref("users");
       if (email.length == 0) {
         alert('Please enter an email address.');
         return;
@@ -47,14 +46,6 @@
         return;
       }
       if (user) {
-        email = user.email;
-        displayName = user.displayName;
-        emailVerified = user.emailVerified;
-        usersRef.child(user.uid).set({
-          email: email,
-          displayName: displayName,
-          emailVerified: emailVerified
-        });
         if (!user.emailVerified) {
           firebase.auth().signOut().then(function() {
             // Sign-out successful.
@@ -141,10 +132,18 @@
   *    out, and that is where we update the UI.
   */
   function initApp() {
+    var usersRef = firebase.database().ref("users");
     // Listening for auth state changes.
     // [START authstatelistener]
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
+          email = user.email;
+          displayName = user.displayName;
+          emailVerified = user.emailVerified;
+          usersRef.child(user.uid).update({
+            email: email,
+            displayName: displayName
+          });
           if (!user.emailVerified) {
 
             firebase.auth().signOut().then(function() {

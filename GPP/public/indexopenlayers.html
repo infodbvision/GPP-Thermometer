@@ -42,19 +42,17 @@
     });
   }
   firebase.auth().onAuthStateChanged(function(user) {
-    firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
     if (user && user.emailVerified == true) {
       document.getElementById("displayName").innerHTML = user.displayName;
     } else {
       window.location = "login.html";
     }
-  });
 });
 
 function betaalLink(){
   firebase.auth().onAuthStateChanged(function(user) {
     firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
-  var cookie = document.cookie = idToken;
+  var cookie = document.cookie = "idToken=" + idToken;
 location.href = "create?description=" + id;
   });
 });
