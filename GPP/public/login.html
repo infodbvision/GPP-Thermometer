@@ -47,12 +47,25 @@
       }
       if (user) {
         if (!user.emailVerified) {
-          firebase.auth().signOut().then(function() {
+          var snackbarContainer = document.querySelector('#snackbar');
+          var showSnackbarButton = document.querySelector('#sign-in');
+          var handler = function(event) {
+            showSnackbarButton.style.backgroundColor = '';
+          };
+          showSnackbarButton.addEventListener('click', function() {
+            var data = {
+              message: 'Please verify your email.',
+              timeout: 2000
+            };
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+          });
+
+/*          firebase.auth().signOut().then(function() {
             // Sign-out successful.
           }).catch(function(error) {
             // An error happened.
-          });
-  //          document.getElementById('quickstart-verify-email').disabled = false;
+          });*/
+
   //        alert("verify de email");
         }
         else {
@@ -82,10 +95,12 @@
   */
   function sendEmailVerification() {
     var email = document.getElementById('email').value;
+    var user = firebase.auth().currentUser;
     if (email.length == 0) {
       alert('Please enter an email address.');
       return;
     }
+    console.log(user);
     // [START sendemailverification]
     firebase.auth().currentUser.sendEmailVerification().then(function() {
       // Email Verification sent!
@@ -137,34 +152,11 @@
     // [START authstatelistener]
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
-          email = user.email;
-          displayName = user.displayName;
           emailVerified = user.emailVerified;
           usersRef.child(user.uid).update({
-            email: email,
-            displayName: displayName
+            emailVerified: emailVerified
           });
           if (!user.emailVerified) {
-
-            firebase.auth().signOut().then(function() {
-              // Sign-out successful.
-            }).catch(function(error) {
-              // An error happened.
-            });
-
-            var snackbarContainer = document.querySelector('#snackbar');
-            var showSnackbarButton = document.querySelector('#sign-in');
-            var handler = function(event) {
-              showSnackbarButton.style.backgroundColor = '';
-            };
-            showSnackbarButton.addEventListener('click', function() {
-              var data = {
-                message: 'Please verify your email.',
-                timeout: 2000
-              };
-              snackbarContainer.MaterialSnackbar.showSnackbar(data);
-            });
-    //          document.getElementById('quickstart-verify-email').disabled = false;
     //        alert("verify de email");
           }
           else {
@@ -174,11 +166,6 @@
     });
     // [END authstatelistener]
     document.getElementById('sign-in').addEventListener('click', toggleSignIn, false);
-    document.getElementById('password').onkeydown = function(event) {
-    if (event.keyCode == 13) {
-        toggleSignIn();
-      }
-    }
     document.getElementById('verify-email').addEventListener('click', sendEmailVerification, false);
     document.getElementById('password-reset').addEventListener('click', sendPasswordReset, false);
   }
