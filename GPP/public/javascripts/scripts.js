@@ -3,6 +3,72 @@ var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 var id;
 
+// Initialize Firebase
+var config = {
+  apiKey: "AIzaSyCmeDbv8eGM8sPlpIGBiT6fxJJD-wujSBM",
+  authDomain: "gppthermometer.firebaseapp.com",
+  databaseURL: "https://gppthermometer.firebaseio.com",
+  projectId: "gppthermometer",
+  storageBucket: "",
+  messagingSenderId: "639524050247"
+};
+firebase.initializeApp(config);
+var database = firebase.database();
+
+var dataString;
+function logOut(){
+  firebase.auth().signOut().then(function() {
+    window.location = "login.html";
+    // Sign-out successful.
+  }).catch(function(error) {
+    // An error happened.
+  });
+}
+
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user && user.emailVerified == true) {
+    document.getElementById("displayName").innerHTML = user.displayName;
+  } else {
+    window.location = "login.html";
+  }
+});
+
+function betaalLink(){
+firebase.auth().onAuthStateChanged(function(user) {
+  firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+var cookie = document.cookie = "idToken=" + idToken;
+location.href = "create?description=" + id;
+});
+});
+}
+
+var dataString = [];
+var arrayData = [];
+firebase.auth().onAuthStateChanged(function(user) {
+var userId = firebase.auth().currentUser.uid;
+
+firebase.database().ref('/users/' + userId + "/payments/").once('value').then(function(snapshot) {
+snapshot.forEach(function(childSnapShot){
+  childkey = childSnapShot.key;
+  childData = childSnapShot.val();
+  jsonData = JSON.stringify(childData);
+  popString = jsonData.split(":").pop();
+  dataString = popString.slice(1, -2);
+  arrayData.push(dataString);
+});
+});
+});
+
+/*
+var hideDiv = document.getElementById("linechart_material");
+if(paymentStatus == paid && paymentDescription == id){
+hideDiv.style.display = "none";
+} else{
+hideDiv.style.display = "block";
+}*/
+
+
+
 var features = [];
 $.ajax({
   url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i19vW-kwy7ttgLcxqW-F1VSNeEJJks5bAqVywA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
@@ -165,6 +231,11 @@ map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
       percentage_fout = featurelist[i].N.percentage_fout;
       laatste_meting = featurelist[i].N.laatste_meting;
       if (featurelist.length < 2) {
+        //HIER KOMT DE ECHTE DATA ALS ER IS BETAALD VOOR DIT PUNT
+        if(arrayData.includes(JSON.stringify(id))){
+          console.log("POGGERS");
+        var voorbeeld = document.getElementById("voorbeeld");
+        voorbeeld.style.display = "none";
         document.getElementById("id").innerHTML = id;
         document.getElementById("artikel").innerHTML = artikel;
         document.getElementById("Xcoordinaat").innerHTML = Xcoordinaat;
@@ -227,7 +298,7 @@ map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
                     percentageArray = alle_percentages.split(hekje);
                     dagpercentage = percentageArray[c - 1].split(aapje);
                     gppper = dagpercentage[1];
-                    voorspelddb = (10 * Math.log10(((c * 1.0) / (parseInt(aantal_dagen) * 1.0)) * (Math.pow(10, (parseFloat(gpp_realtime) / 10))))).toFixed(2);
+                    voorspelddb = (10 * Math.log(((c * 1.0) / (parseInt(aantal_dagen) * 1.0)) * (Math.pow(10, (parseFloat(gpp_realtime) / 10)))) / Math.log(10)).toFixed(2);
                     voorspeldper = (Math.pow(10, (parseFloat(voorspelddb) / 10)) / Math.pow(10, (parseFloat(gpp) / 10)) * 100).toFixed(2);
                     if (parseFloat(gppper) == -1){voorspeldper = voorspeldper;}
                     if (parseFloat(gppper) != -1){voorspeldper = null;}
@@ -310,9 +381,164 @@ map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
       }
     })
             wrapperper.draw();
-            content.innerHTML = 'Klik op de knop om dit punt te kopen <button onclick="betaalLink()">Koop</button>';
+            content.innerHTML = 'U betaald voor dit punt'
             overlay.setPosition(coordinate);
           }
+          // DIT IS DE VOORBEELD DATA ALS ER NOG NIET IS BETAALD
+        } else {
+          console.log("RIP");
+          var voorbeeld = document.getElementById("voorbeeld");
+          voorbeeld.style.display = "block";
+          document.getElementById("id").innerHTML = id;
+          document.getElementById("artikel").innerHTML = artikel;
+          document.getElementById("Xcoordinaat").innerHTML = Xcoordinaat;
+          document.getElementById("Ycoordinaat").innerHTML = Ycoordinaat;
+          document.getElementById("Zcoordinaat").innerHTML = Zcoordinaat + " m";
+          document.getElementById("gpp").innerHTML = gpp + " dB";
+          if(!recent_bes){
+              document.getElementById("recent_bes").innerHTML = "--";
+          } else{
+          document.getElementById("recent_bes").innerHTML = '<a href="http://www.rijkswaterstaat.nl/apps/geoservices/rwsnl/download//geluidsregister/'+ recent_bes + '" target="_blank">' + recent_bes.replace('besluiten/','') + '</a>';
+          }
+          if(artikel == '11.45 lid 1'){
+            document.getElementById("pcw").innerHTML = "1.50 dB"
+          } else{
+            document.getElementById("pcw").innerHTML = "0.00 dB"
+          }
+
+          document.getElementById("gpp_realtime").innerHTML = gpp_realtime + " dB";
+          document.getElementById("geluidruimte").innerHTML = geluidruimte + " dB";
+          document.getElementById("gpp_vrsp").innerHTML = gpp_vrsp + " dB";
+          document.getElementById("percentage_fout").innerHTML = percentage_fout + " %";
+
+          datumString = beg_dat;
+          var beginDatum = new Date(datumString.substr(0, 4), parseInt(datumString.substr(5, 2)) - 1, datumString.substr(8, 2));
+          beginDatumString = beginDatum.toLocaleDateString();
+
+          document.getElementById("beg_dat").innerHTML = beginDatumString;
+
+          if(!laatste_meting){
+              document.getElementById("laatste_meting").innerHTML = "--";
+          } else{
+            datumString2 = laatste_meting;
+            var meetDatum = new Date(datumString2.substr(0, 4), parseInt(datumString2.substr(5, 2)) - 1, datumString2.substr(8, 2));
+            meetDatumString = meetDatum.toLocaleDateString();
+            document.getElementById("laatste_meting").innerHTML = meetDatumString;
+          }
+
+          var i;
+          var tablinks;
+          var x = document.getElementsByClassName("tabs");
+          for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+          }
+          tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < x.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+        }
+          document.getElementById("Geluid").style.display = "block";
+          document.getElementById("Geluidbutton").className += " w3-blue";
+
+          var dagen = [];
+                  var hekje = '#';
+                  var aapje = '@';
+                  var streepje = '-';
+
+                  var percentages = [];
+
+              for (var c = 1; c <= parseInt(dagen_totaal); c++)
+              {
+                      percentageArray = alle_percentages.split(hekje);
+                      dagpercentage = percentageArray[c - 1].split(aapje);
+                      gppper = dagpercentage[1];
+                      voorspelddb = (10 * Math.log(((c * 1.0) / (parseInt(aantal_dagen) * 1.0)) * (Math.pow(10, (parseFloat(gpp_realtime) / 10)))) / Math.log(10)).toFixed(2);
+                      voorspeldper = (Math.pow(10, (parseFloat(voorspelddb) / 10)) / Math.pow(10, (parseFloat(gpp) / 10)) * 100).toFixed(2);
+                      if (parseFloat(gppper) == -1){voorspeldper = voorspeldper;}
+                      if (parseFloat(gppper) != -1){voorspeldper = null;}
+                      if (parseFloat(gppper) == -1){gppper = null;}
+                      if (parseFloat(gppper) != -1){gppper = gppper;}
+                      var gppperdatum = dagpercentage[0];
+                      var gppperdatumArray = gppperdatum.split(streepje);
+                      var gppperjaar = gppperdatumArray[0];
+                      var gpppermaand = gppperdatumArray[1];
+                      var gppperdag = gppperdatumArray[2];
+                      percentages.push ([new Date(parseInt(gppperjaar), parseInt(gpppermaand) - 1, parseInt(gppperdag)), parseFloat(gppper) , 100, parseFloat(voorspeldper)]);
+              }
+
+          google.charts.load('current');
+          google.charts.setOnLoadCallback(drawChart);
+
+          function drawChart() {
+
+            var data = new google.visualization.DataTable();
+            data.addColumn('date', 'dag');
+            data.addColumn('number', 'Realtime');
+            data.addColumn('number', 'GPP');
+            data.addColumn('number', 'Voorspelling');
+            data.addRows(
+              percentages
+            );
+            var dateTicks = [];
+                dateTicks.push( new Date(parseInt(gppperjaar), 0, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 1, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 2, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 3, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 4, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 5, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 6, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 7, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 8, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 9, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 10, 1));
+                dateTicks.push( new Date(parseInt(gppperjaar), 11, 1));
+
+            var options = {
+              title: 'GPP Realtime Percentage',
+              series: {2:{lineDashStyle: [2, 2], color: '64B8F8'}},
+              vAxis: {
+                title: '%',
+                ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                viewWindow:{ max:100, min:0}},
+                hAxis: {
+                title: 'Maand',
+                format: 'MMM',
+                ticks: dateTicks,
+                gridlines: {count: 12}},
+                legend: { position: 'top' },
+                width: document.getElementById('tabid').getBoundingClientRect().width,
+                height: 400,
+                chartArea: {'width': '80%', 'height': '80%'}
+              };
+              var wrapperper = new google.visualization.ChartWrapper({
+                chartType: 'LineChart',
+                dataTable: data,
+                options: options,
+                containerId: 'linechart_material'
+              });
+
+              google.visualization.events.addListener(wrapperper, 'ready', function() {
+                  var indent = 18,
+                  texts = document.querySelectorAll('text'),
+                  formatter = new google.visualization.DateFormat({pattern: 'MMM'});
+
+              function indentText(month) {
+          for (var t=0;t<texts.length;t++) {
+            if (texts[t].textContent == month) {
+              texts[t].setAttribute('x', parseInt(texts[t].getAttribute('x'))+indent);
+              return;
+            }
+          }
+        }
+        for (var i=0;i<dateTicks.length;i++) {
+          indentText(formatter.formatValue(dateTicks[i]));
+        }
+      })
+              wrapperper.draw();
+              overlay.setPosition(coordinate);
+            }
+
+          content.innerHTML = 'Klik op de knop om dit punt te kopen <button onclick="betaalLink()">Koop</button>';
+        }
       } else {
         content.innerHTML = 'U heeft ' + featurelist.length + ' punten aangeklikt. Voor meer informatie zoom in en klik één punt aan.';
         overlay.setPosition(coordinate);
