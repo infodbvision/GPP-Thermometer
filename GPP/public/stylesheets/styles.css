@@ -31,15 +31,6 @@
   left: 48px;
   margin-left: -11px;
 }
-.ol-popup-closer {
-  text-decoration: none;
-  position: absolute;
-  top: 2px;
-  right: 8px;
-}
-.ol-popup-closer:after {
-  content: "X";
-}
 body
 {
 margin:0px; auto;
@@ -211,4 +202,10 @@ padding:0px;
 @keyframes sk-circleFadeDelay {
   0%, 39%, 100% { opacity: 0; }
   40% { opacity: 1; }
+}
+#voorbeeld{
+  display:none;
+  text-align:center;
+  color:#808080;
+  font-weight: bold;
 }

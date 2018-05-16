@@ -100,12 +100,12 @@
       alert('Please enter an email address.');
       return;
     }
-    console.log(user);
     // [START sendemailverification]
     firebase.auth().currentUser.sendEmailVerification().then(function() {
       // Email Verification sent!
       // [START_EXCLUDE]
       alert('Email Verification Sent!');
+      location.reload();
       // [END_EXCLUDE]
     });
     // [END sendemailverification]
