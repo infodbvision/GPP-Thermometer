@@ -120,22 +120,6 @@ var geocoder = new Geocoder('nominatim', {
   preventDefault: false
 });
 
-/*
-var layers = [
-new ol.layer.Tile({
-source: new ol.source.OSM()
-}),
-new ol.layer.Image({
-extent: [-13884991, 2870341, -7455066, 6338219],
-source: new ol.source.ImageWMS({
-url: 'http://172.16.29.41:8080/geoserver/geluidregister/wms?service=WMS&version=1.1.0&request=GetMap&layers=geluidregister:c207_geluidproductieplafonds&styles=&bbox=394143.1875,6578046.5,804491.3125,7063132.5&width=649&height=768&srs=EPSG:900913&format=application/openlayers',
-params: {'LAYERS': 'geluidregister:c207_geluidproductieplafonds'},
-ratio: 1,
-serverType: 'geoserver'
-})
-})
-];*/
-
 var source = new ol.source.Vector({
   features: features
 });
@@ -156,8 +140,17 @@ var clusters = new ol.layer.Vector({
   source: clusterSource,
   style: function(feature) {
     var size = feature.get('features').length;
+    var featurelist = feature.N.features;
+    if (featurelist.length > 0) {
+      for (var i = 0, ii = featurelist.length; i < ii; ++i) {
+    var id = featurelist[i].N.id;
+    var geluidruimte = featurelist[i].N.geluidruimte;
+  }
+}
     var style = styleCache[size];
-    if (!style) {
+      if(size == 1 && arrayData.includes(JSON.stringify(id)) == true){
+        //GROEN
+      if(geluidruimte > 0.5){
       style = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 10,
@@ -165,18 +158,83 @@ var clusters = new ol.layer.Vector({
             color: '#fff'
           }),
           fill: new ol.style.Fill({
-            color: 'teal'
+            color: 'green'
           })
         }),
         text: new ol.style.Text({
-          text: size.toString(),
+          text: geluidruimte.toString(),
+          fill: new ol.style.Fill({
+            color: '#fff'
+          }),
+          font:'9px sans-serif'
+        })
+      });
+      styleCache[size] = style;
+      }
+      //GEEL
+      if(geluidruimte > 0 && geluidruimte < 0.5){
+      style = new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 10,
+          stroke: new ol.style.Stroke({
+            color: '#fff'
+          }),
+          fill: new ol.style.Fill({
+            color: 'yellow'
+          })
+        }),
+        text: new ol.style.Text({
+          text: geluidruimte.toString(),
           fill: new ol.style.Fill({
             color: '#fff'
           })
         })
       });
       styleCache[size] = style;
+      }
+      //ROOD
+      if(geluidruimte < 0){
+      style = new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 10,
+          stroke: new ol.style.Stroke({
+            color: '#fff'
+          }),
+          fill: new ol.style.Fill({
+            color: 'red'
+          })
+        }),
+        text: new ol.style.Text({
+          text: geluidruimte.toString(),
+          fill: new ol.style.Fill({
+            color: '#fff'
+          })
+        })
+      });
+      styleCache[size] = style;
+      }
     }
+
+      else{
+        style = new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 10,
+            stroke: new ol.style.Stroke({
+              color: '#fff'
+            }),
+            fill: new ol.style.Fill({
+              color: 'teal'
+            })
+          }),
+          text: new ol.style.Text({
+            text: size.toString(),
+            fill: new ol.style.Fill({
+              color: '#fff'
+            })
+          })
+        });
+        styleCache[size] = style;
+      }
     return style;
   }
 });
@@ -223,6 +281,7 @@ map.on('singleclick', function(evt) {
             var voorbeeld = document.getElementById("voorbeeld");
             voorbeeld.style.display = "none";
             document.getElementById("id").innerHTML = id;
+
             document.getElementById("artikel").innerHTML = artikel;
             document.getElementById("Xcoordinaat").innerHTML = Xcoordinaat;
             document.getElementById("Ycoordinaat").innerHTML = Ycoordinaat;
@@ -405,7 +464,7 @@ map.on('singleclick', function(evt) {
             document.getElementById("Xcoordinaat").innerHTML = Xcoordinaat;
             document.getElementById("Ycoordinaat").innerHTML = Ycoordinaat;
             document.getElementById("Zcoordinaat").innerHTML = Zcoordinaat + " m";
-            document.getElementById("gpp").innerHTML = gpp + " dB";
+            document.getElementById("gpp").innerHTML ="60 dB";
             if (!recent_bes) {
               document.getElementById("recent_bes").innerHTML = "--";
             } else {
@@ -417,10 +476,10 @@ map.on('singleclick', function(evt) {
               document.getElementById("pcw").innerHTML = "0.00 dB"
             }
 
-            document.getElementById("gpp_realtime").innerHTML = gpp_realtime + " dB";
-            document.getElementById("geluidruimte").innerHTML = geluidruimte + " dB";
-            document.getElementById("gpp_vrsp").innerHTML = gpp_vrsp + " dB";
-            document.getElementById("percentage_fout").innerHTML = percentage_fout + " %";
+            document.getElementById("gpp_realtime").innerHTML = "61 dB";
+            document.getElementById("geluidruimte").innerHTML = "3 dB";
+            document.getElementById("gpp_vrsp").innerHTML = "58 dB";
+            document.getElementById("percentage_fout").innerHTML = "1.04 %";
 
             datumString = beg_dat;
             var beginDatum = new Date(datumString.substr(0, 4), parseInt(datumString.substr(5, 2)) - 1, datumString.substr(8, 2));
@@ -428,14 +487,7 @@ map.on('singleclick', function(evt) {
 
             document.getElementById("beg_dat").innerHTML = beginDatumString;
 
-            if (!laatste_meting) {
-              document.getElementById("laatste_meting").innerHTML = "--";
-            } else {
-              datumString2 = laatste_meting;
-              var meetDatum = new Date(datumString2.substr(0, 4), parseInt(datumString2.substr(5, 2)) - 1, datumString2.substr(8, 2));
-              meetDatumString = meetDatum.toLocaleDateString();
-              document.getElementById("laatste_meting").innerHTML = meetDatumString;
-            }
+              document.getElementById("laatste_meting").innerHTML = "01-01-2019";
 
             var i;
             var tablinks;
@@ -450,130 +502,71 @@ map.on('singleclick', function(evt) {
             document.getElementById("Geluid").style.display = "block";
             document.getElementById("Geluidbutton").className += " w3-blue";
 
-            var dagen = [];
-            var hekje = '#';
-            var aapje = '@';
-            var streepje = '-';
+            google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
-            var percentages = [];
+      function drawChart() {
 
-            for (var c = 1; c <= parseInt(dagen_totaal); c++) {
-              percentageArray = alle_percentages.split(hekje);
-              dagpercentage = percentageArray[c - 1].split(aapje);
-              gppper = dagpercentage[1];
-              voorspelddb = (10 * Math.log(((c * 1.0) / (parseInt(aantal_dagen) * 1.0)) * (Math.pow(10, (parseFloat(gpp_realtime) / 10)))) / Math.log(10)).toFixed(2);
-              voorspeldper = (Math.pow(10, (parseFloat(voorspelddb) / 10)) / Math.pow(10, (parseFloat(gpp) / 10)) * 100).toFixed(2);
-              if (parseFloat(gppper) == -1) {
-                voorspeldper = voorspeldper;
-              }
-              if (parseFloat(gppper) != -1) {
-                voorspeldper = null;
-              }
-              if (parseFloat(gppper) == -1) {
-                gppper = null;
-              }
-              if (parseFloat(gppper) != -1) {
-                gppper = gppper;
-              }
-              var gppperdatum = dagpercentage[0];
-              var gppperdatumArray = gppperdatum.split(streepje);
-              var gppperjaar = gppperdatumArray[0];
-              var gpppermaand = gppperdatumArray[1];
-              var gppperdag = gppperdatumArray[2];
-              percentages.push([new Date(parseInt(gppperjaar), parseInt(gpppermaand) - 1, parseInt(gppperdag)), parseFloat(gppper), 100, parseFloat(voorspeldper)]);
+        var data = new google.visualization.DataTable();
+        data.addColumn('date', 'dag');
+        data.addColumn('number', 'Realtime');
+        data.addColumn('number', 'GPP');
+        data.addColumn('number', 'Voorspelling');
+        data.addRows([
+          [new Date(2018, 0, 1),  1, 100, 1],
+          [new Date(2018, 1, 6),  10, 100, 14],
+          [new Date(2018, 2, 3),  20,   100, 21],
+          [new Date(2018, 3, 21), 30, 100, 34],
+          [new Date(2018, 4, 7),  40, 100, 43],
+          [new Date(2018, 5, 8),  50, 100,  55],
+          [new Date(2018, 6, 3),   60, 100,  67],
+          [new Date(2018, 7, 15),  70, 100, 73],
+          [new Date(2018, 8, 28),  null, 100, 80],
+          [new Date(2018, 9, 17), null, 100, 86],
+          [new Date(2018, 10, 6),  null,  100,  94],
+          [new Date(2018, 11, 18),  null,  100,  100],
+        ]);
+
+        var options = {
+          title: 'GPP Realtime Percentage',
+          series: {
+            2: {
+              lineDashStyle: [2, 2],
+              color: '64B8F8'
             }
-
-            google.charts.load('current');
-            google.charts.setOnLoadCallback(drawChart);
-
-            function drawChart() {
-
-              var data = new google.visualization.DataTable();
-              data.addColumn('date', 'dag');
-              data.addColumn('number', 'Realtime');
-              data.addColumn('number', 'GPP');
-              data.addColumn('number', 'Voorspelling');
-              data.addRows(
-                percentages
-              );
-              var dateTicks = [];
-              dateTicks.push(new Date(parseInt(gppperjaar), 0, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 1, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 2, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 3, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 4, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 5, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 6, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 7, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 8, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 9, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 10, 1));
-              dateTicks.push(new Date(parseInt(gppperjaar), 11, 1));
-
-              var options = {
-                title: 'GPP Realtime Percentage',
-                series: {
-                  2: {
-                    lineDashStyle: [2, 2],
-                    color: '64B8F8'
-                  }
-                },
-                vAxis: {
-                  title: '%',
-                  ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-                  viewWindow: {
-                    max: 100,
-                    min: 0
-                  }
-                },
-                hAxis: {
-                  title: 'Maand',
-                  format: 'MMM',
-                  ticks: dateTicks,
-                  gridlines: {
-                    count: 12
-                  }
-                },
-                legend: {
-                  position: 'top'
-                },
-                width: document.getElementById('tabid').getBoundingClientRect().width,
-                height: 400,
-                chartArea: {
-                  'width': '80%',
-                  'height': '80%'
-                }
-              };
-              var wrapperper = new google.visualization.ChartWrapper({
-                chartType: 'LineChart',
-                dataTable: data,
-                options: options,
-                containerId: 'linechart_material'
-              });
-
-              google.visualization.events.addListener(wrapperper, 'ready', function() {
-                var indent = 18,
-                  texts = document.querySelectorAll('text'),
-                  formatter = new google.visualization.DateFormat({
-                    pattern: 'MMM'
-                  });
-
-                function indentText(month) {
-                  for (var t = 0; t < texts.length; t++) {
-                    if (texts[t].textContent == month) {
-                      texts[t].setAttribute('x', parseInt(texts[t].getAttribute('x')) + indent);
-                      return;
-                    }
-                  }
-                }
-                for (var i = 0; i < dateTicks.length; i++) {
-                  indentText(formatter.formatValue(dateTicks[i]));
-                }
-              })
-              wrapperper.draw();
-              overlay.setPosition(coordinate);
+          },
+          vAxis: {
+            title: '%',
+            ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+            viewWindow: {
+              max: 100,
+              min: 0
             }
+          },
+          hAxis: {
+            title: 'Maand',
+            format: 'MMM',
+            gridlines: {
+              count: 12
+            }
+          },
+          legend: {
+            position: 'top'
+          },
+          width: document.getElementById('tabid').getBoundingClientRect().width,
+          height: 400,
+          chartArea: {
+            'width': '80%',
+            'height': '80%'
+          }
+        };
 
+        var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
+
+        chart.draw(data, options);
+        overlay.setPosition(coordinate);
+
+      }
             content.innerHTML = 'Klik op de knop om dit punt te kopen <button onclick="betaalLink()">Koop</button>';
           }
         } else {

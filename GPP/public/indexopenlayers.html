@@ -9,8 +9,9 @@
   <link rel="stylesheet" type="text/css" href="styles.css">
   <style>
   .map {
-    height: 790px;
-    width: 100%;
+    position: absolute;
+    height: 93%;
+    width: 65%;
   }
   </style>
   <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
@@ -45,9 +46,11 @@
   <input type="hidden" id="progress_width" value="0">
 
   <div class="w3-bar w3-blue w3-border">
-    <a href="#" class="w3-bar-item w3-button material-icons w3-hover-text-black w3-hover-none" onclick="window.location = 'indexopenlayers.html';">home</a>
-    <a href="#" class="w3-bar-item w3-button w3-hover-text-black w3-hover-none" onclick="logOut()">Logout</a>
+    <a class="w3-bar-item w3-button material-icons w3-hover-text-black w3-hover-none" onclick="window.location = '/';">home</a>
+    <a class="w3-bar-item w3-button w3-hover-text-black w3-hover-none" onclick="logOut()">Logout</a>
     <a class="w3-bar-item">Welkom <span id = "displayName"></span></a>
+    <a class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="window.location = 'contact.html';">Contact</a>
+    <a class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="window.location = 'about.html';">About</a>
 <!--    <a class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none">shopping_cart</a>-->
   </div>
 
@@ -60,7 +63,7 @@
       </div>
     </div>
 
-    <div class="w3-col s4 m4 l4" id ="tabid" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)">
+    <div class="w3-col s4 m4 l4" id ="tabid" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); float:right;">
       <div class="w3-bar w3-black">
         <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'Locatie')">Locatie</button>
         <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'Wetgeving')">Wetgeving</button>
