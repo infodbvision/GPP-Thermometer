@@ -62,7 +62,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 var features = [];
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i19vW-kwy7ttgLcxqW-F1VSNeEJJks5bAqVywA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i48U396P1IcXmv5Y8i9wzZyon83Sks5bDP4EwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
@@ -326,10 +326,10 @@ map.on('singleclick', function(evt) {
             }
             tablinks = document.getElementsByClassName("tablink");
             for (i = 0; i < x.length; i++) {
-              tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+              tablinks[i].className = tablinks[i].className.replace(" w3-indigo", "");
             }
             document.getElementById("Geluid").style.display = "block";
-            document.getElementById("Geluidbutton").className += " w3-blue";
+            document.getElementById("Geluidbutton").className += " w3-indigo";
 
             var dagen = [];
             var hekje = '#';
@@ -452,6 +452,8 @@ map.on('singleclick', function(evt) {
                 }
               })
               wrapperper.draw();
+              var x = document.getElementById("popup");
+              x.style.minWidth = "200px";
               content.innerHTML = 'U betaald voor dit punt'
               overlay.setPosition(coordinate);
             }
@@ -497,10 +499,10 @@ map.on('singleclick', function(evt) {
             }
             tablinks = document.getElementsByClassName("tablink");
             for (i = 0; i < x.length; i++) {
-              tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+              tablinks[i].className = tablinks[i].className.replace(" w3-indigo", "");
             }
             document.getElementById("Geluid").style.display = "block";
-            document.getElementById("Geluidbutton").className += " w3-blue";
+            document.getElementById("Geluidbutton").className += " w3-indigo";
 
             google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
@@ -513,14 +515,14 @@ map.on('singleclick', function(evt) {
         data.addColumn('number', 'GPP');
         data.addColumn('number', 'Voorspelling');
         data.addRows([
-          [new Date(2018, 0, 1),  1, 100, 1],
-          [new Date(2018, 1, 6),  10, 100, 14],
-          [new Date(2018, 2, 3),  20,   100, 21],
-          [new Date(2018, 3, 21), 30, 100, 34],
-          [new Date(2018, 4, 7),  40, 100, 43],
-          [new Date(2018, 5, 8),  50, 100,  55],
-          [new Date(2018, 6, 3),   60, 100,  67],
-          [new Date(2018, 7, 15),  70, 100, 73],
+          [new Date(2018, 0, 1),  1, 100, null],
+          [new Date(2018, 1, 6),  10, 100, null],
+          [new Date(2018, 2, 3),  20,   100, null],
+          [new Date(2018, 3, 21), 30, 100, null],
+          [new Date(2018, 4, 7),  40, 100, null],
+          [new Date(2018, 5, 8),  50, 100,  null],
+          [new Date(2018, 6, 3),   60, 100,  null],
+          [new Date(2018, 7, 15),  70, 100, 70],
           [new Date(2018, 8, 28),  null, 100, 80],
           [new Date(2018, 9, 17), null, 100, 86],
           [new Date(2018, 10, 6),  null,  100,  94],
@@ -567,9 +569,13 @@ map.on('singleclick', function(evt) {
         overlay.setPosition(coordinate);
 
       }
-            content.innerHTML = 'Klik op de knop om dit punt te kopen <button onclick="betaalLink()">Koop</button>';
+            var x = document.getElementById("popup");
+            x.style.minWidth = "0px";
+            content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="betaalLink()" style="border-radius: 10px;">Kopen</button>';
           }
         } else {
+          var x = document.getElementById("popup");
+          x.style.minWidth = "200px";
           content.innerHTML = 'U heeft ' + featurelist.length + ' punten aangeklikt. Voor meer informatie zoom in en klik één punt aan.';
           overlay.setPosition(coordinate);
         }
@@ -590,10 +596,10 @@ function openTab(evt, Tabname) {
   }
   tablinks = document.getElementsByClassName("tablink");
   for (i = 0; i < x.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" w3-blue", "");
+    tablinks[i].className = tablinks[i].className.replace(" w3-indigo", "");
   }
   document.getElementById(Tabname).style.display = "block";
-  evt.currentTarget.className += " w3-blue";
+  evt.currentTarget.className += " w3-indigo";
 }
 
 document.onreadystatechange = function(e) {

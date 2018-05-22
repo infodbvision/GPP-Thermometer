@@ -4,11 +4,13 @@
 <head>
   <meta charset=utf-8 />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email/Password Authentication Example</title>
+  <title>Inloggen</title>
 
   <!-- Material Design Theming -->
   <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.orange-indigo.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" type="text/css" href="styles.css">
   <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
   <link rel="stylesheet" href="main.css">
@@ -38,11 +40,11 @@
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
       if (email.length == 0) {
-        alert('Please enter an email address.');
+        alert('Vul een emailadres in.');
         return;
       }
       if (password.length == 0) {
-        alert('Please enter a password.');
+        alert('Vul een wachtwoord in.');
         return;
       }
       if (user) {
@@ -54,7 +56,7 @@
           };
           showSnackbarButton.addEventListener('click', function() {
             var data = {
-              message: 'Please verify your email.',
+              message: 'Verifieer uw emailadres.',
               timeout: 2000
             };
             snackbarContainer.MaterialSnackbar.showSnackbar(data);
@@ -80,7 +82,7 @@
         var errorMessage = error.message;
         // [START_EXCLUDE]
         if (errorCode === 'auth/wrong-password') {
-          alert('Wrong password.');
+          alert('Verkeerd wachtwoord');
         } else {
           alert(errorMessage);
         }
@@ -97,26 +99,40 @@
     var email = document.getElementById('email').value;
     var user = firebase.auth().currentUser;
     if (email.length == 0) {
-      alert('Please enter an email address.');
+      alert('Vul een emailadres in.');
       return;
     }
     // [START sendemailverification]
     firebase.auth().currentUser.sendEmailVerification().then(function() {
       // Email Verification sent!
       // [START_EXCLUDE]
-      alert('Email Verification Sent!');
-      location.reload();
+      alert('Verificatie email is gestuurd.');
       // [END_EXCLUDE]
+    }).catch(function(error){
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log(error.code);
+      // [START_EXCLUDE]
+      if (errorCode == 'auth/invalid-email') {
+        alert(errorMessage);
+      } else if (errorCode == 'auth/user-not-found') {
+        alert(errorMessage);
+      }
+      console.log(error);
     });
     // [END sendemailverification]
   }
   function sendPasswordReset() {
     var email = document.getElementById('email').value;
+    if (email.length == 0) {
+      alert('Vul een emailadres in.');
+      return;
+    }
     // [START sendpasswordemail]
     firebase.auth().sendPasswordResetEmail(email).then(function() {
       // Password Reset Email Sent!
       // [START_EXCLUDE]
-      alert('Password Reset Email Sent!');
+      alert('Wachtwoord reset email is verstuurd.');
       // [END_EXCLUDE]
     }).catch(function(error) {
       // Handle Errors here.
@@ -177,38 +193,36 @@
 <body>
   <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
 
-    <!-- Header section containing title -->
-    <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
-      <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
-        <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--8-col-desktop">
-          <h3>GPP Thermometer login</h3>
-        </div>
+      <div class="w3-bar w3-indigo w3-border">
+        <h3>GPP Thermometer login</h3>
       </div>
-    </header>
 
     <main class="mdl-layout__content mdl-color--grey-100">
       <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
         <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-          <div class="mdl-card__title mdl-color--light-blue-600 mdl-color-text--white">
-            <h2 class="mdl-card__title-text">Firebase Email &amp; Password Authentication</h2>
+          <div class="mdl-card__title w3-indigo mdl-color-text--white">
+            <h2 class="mdl-card__title-text">Log hier in voor de GPP Thermometer</h2>
           </div>
           <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <p>Enter your email and password below and sign in.<b> Don't forget to verify your email or you can't login</b></p>
+            <p><b>Vergeet niet uw emailadres te verifiëren anders kunt U niet inloggen.</b></p>
 
-            <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email" placeholder="Email"/>
+            <input class="mdl-textfield__input" style="display:inline;width:auto;" type="email" id="email" name="email" placeholder="Email"/>
             &nbsp;&nbsp;&nbsp;
-            <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Password"/>
+            <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Wachtwoord"/>
             <br/><br/>
-            <button class="mdl-button mdl-js-button mdl-button--raised" id="sign-in" name="signin">Sign In</button>
+            <button class="w3-btn w3-ripple w3-indigo" id="sign-in" name="signin">Login</button>
             &nbsp;&nbsp;&nbsp;
-            <button class="mdl-button mdl-js-button mdl-button--raised" id="verify-email" name="verify-email">Send Email Verification</button>
+            <button class="w3-btn w3-ripple w3-indigo" id="verify-email" name="verify-email">Stuur verificatie email</button>
             &nbsp;&nbsp;&nbsp;
-            <button class="mdl-button mdl-js-button mdl-button--raised" id="password-reset" name="verify-email">Send Password Reset Email</button>
+            <button class="w3-btn w3-ripple w3-indigo" id="password-reset" name="verify-email">Stuur wachtwoord reset email</button>
             &nbsp;&nbsp;&nbsp;
-            <button onclick="location.href='register.html';" class="mdl-button mdl-js-button mdl-button--raised" id="register" name="register">Registreren</button>
+            <button onclick="location.href='register.html';" class="w3-btn w3-ripple w3-indigo" id="register" name="register">Registreren</button>
           </div>
         </div>
       </div>
+      <footer>
+        Gemaakt door <a href="https://www.dbvision.nl">dBvision</a>
+      </footer>
     </main>
   </div>
   <div id="snackbar" class="mdl-js-snackbar mdl-snackbar">
