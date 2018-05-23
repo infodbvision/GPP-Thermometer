@@ -36,6 +36,9 @@ body
 margin:0px; auto;
 padding:0px;
 }
+html{
+  background-color: #f2f2f2;
+}
 footer
 {
   bottom: 5px;
@@ -214,5 +217,9 @@ footer
   display:none;
   text-align:center;
   color:#808080;
+  font-weight: bold;
+}
+h4{
+  color: #3f51b5;
   font-weight: bold;
 }

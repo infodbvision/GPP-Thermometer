@@ -62,7 +62,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 var features = [];
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/performance/master/data.json?token=ALZ4i48U396P1IcXmv5Y8i9wzZyon83Sks5bDP4EwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i6W9KxVkFTdsIqrwiAU5kwRxkBBpks5bDk_GwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
@@ -223,7 +223,7 @@ var clusters = new ol.layer.Vector({
               color: '#fff'
             }),
             fill: new ol.style.Fill({
-              color: 'teal'
+              color: '#3f51b5'
             })
           }),
           text: new ol.style.Text({

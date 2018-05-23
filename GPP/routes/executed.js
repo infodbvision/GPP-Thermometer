@@ -6,7 +6,7 @@ var admin = require("firebase-admin");
 require('firebase/auth');
 require('firebase/database');
 
-var serviceAccount = require("C:/Users/Mees Gieling/Github/performance/GPP/gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
+var serviceAccount = require("C:/Users/Mees Gieling/Github/GPP Thermometer/GPP/gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

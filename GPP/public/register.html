@@ -14,7 +14,11 @@
   <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
 
   <link rel="stylesheet" href="main.css">
-
+  <style>
+  button{
+    border-radius: 5px;
+  }
+  </style>
   <!-- Import and configure the Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
   <script>
@@ -127,7 +131,7 @@
             &nbsp;&nbsp;&nbsp;
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Wachtwoord"/>
             <br/><br/>
-            <button class="w3-btn w3-ripple w3-indigo" id="sign-up" name="signup">Registreren</button>
+            <button class="w3-btn w3-ripple w3-blue" id="sign-up" name="signup">Registreren</button>
             &nbsp;&nbsp;&nbsp;
             <button class="w3-btn w3-ripple w3-indigo" id="terug" name="terug" onclick="window.location = 'login.html';">Terug</button>
           </div>
