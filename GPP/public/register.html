@@ -40,20 +40,30 @@
   * Handles the sign up button press.
   */
   function handleSignUp() {
+    var x = document.getElementById("snackbar");
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
     var displayName = document.getElementById('username').value;
     var usersRef = firebase.database().ref("users");
     if (displayName.length == 0) {
-      alert('Vul een gebruikersnaam in');
+//      alert('Vul een gebruikersnaam in');
+      x.innerHTML = "Vul een gebruikersnaam in";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       return;
     }
     if (email.length == 0) {
-      alert('Vul een emailadres in.');
+//      alert('Vul een emailadres in.');
+      x.innerHTML = "Vul een emailadres in";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       return;
     }
     if (password.length == 0) {
-      alert('Vul een wachtwoord in.');
+//      alert('Vul een wachtwoord in.');
+      x.innerHTML = "Vul een wachtwoord in";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       return;
     }
     // Sign in with email and pass.
@@ -80,7 +90,10 @@
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode == 'auth/weak-password') {
-        alert('Dit wachtwoord is niet sterk genoeg.');
+//        alert('Dit wachtwoord is niet sterk genoeg.');
+        x.innerHTML = "Dit wachtwoord is niet sterk genoeg";
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
       } else {
         alert(errorMessage);
       }
@@ -137,6 +150,7 @@
           </div>
         </div>
       </div>
+      <div id="snackbar"></div>
       <footer>
         Gemaakt door <a href="https://www.dbvision.nl">dBvision</a>
       </footer>
