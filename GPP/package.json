@@ -21,5 +21,8 @@
     "request-param": "^1.0.1",
     "serve-favicon": "^2.5.0",
     "static-favicon": "^2.0.0-alpha"
+  },
+  "devDependencies": {
+    "gh-pages": "^1.1.0"
   }
 }

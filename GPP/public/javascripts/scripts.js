@@ -53,11 +53,23 @@ firebase.auth().onAuthStateChanged(function(user) {
       childkey = childSnapShot.key;
       childData = childSnapShot.val();
       jsonData = JSON.stringify(childData);
-      popString = jsonData.split(":").pop();
-      dataString = popString.slice(1, -2);
+      popString = jsonData.split("PuntID").pop();
+      dataString = popString.slice(3, -23);
       arrayData.push(dataString);
+      console.log(dataString);
     });
   });
+});
+
+firebase.auth().onAuthStateChanged(function(user) {
+  var userId = firebase.auth().currentUser.uid;
+var ref = firebase.database().ref('/users/' + userId + "/payments/");
+var now = Date.now();
+var cutoff = now - 365.2425 * 24 * 60 * 60 * 1000; // Een jaar is precies 365,2425 dagen lang https://en.wikipedia.org/wiki/Year
+var old = ref.orderByChild('Time').endAt(cutoff).limitToLast(1);
+var listener = old.on('child_added', function(snapshot){
+  snapshot.ref.remove();
+});
 });
 
 var features = [];

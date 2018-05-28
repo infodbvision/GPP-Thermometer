@@ -49,6 +49,7 @@ router.get('/',function(req, res) {
               var uid = decodedToken.uid;
               console.log("USER ID IS: " + uid);
               usersRef.child(uid + "/payments").push({
+                Time: firebase.database.ServerValue.TIMESTAMP,
                 PuntID: paymentDescription
               });
             }).catch(function(error) {
