@@ -16,7 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 app.use( require('request-param')() )
-app.use(express.static('public'))
+app.use(express.static('public/html'))
 app.use(express.static('public/javascripts'))
 app.use(express.static('public/stylesheets'))
 app.use(favicon(path.join(__dirname, 'public/images', 'favicon.ico')));
@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/create', create);
 app.use('/execute', executed);
-app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/public/indexopenlayers.html')))
+app.get('/', (req, res) => res.sendFile(path.join(__dirname + '/public/html/index.html')))
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
