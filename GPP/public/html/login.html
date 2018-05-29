@@ -18,201 +18,7 @@
   }
   </style>
   <link rel="stylesheet" href="main.css">
-
-  <!-- Import and configure the Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
-  <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCmeDbv8eGM8sPlpIGBiT6fxJJD-wujSBM",
-    authDomain: "gppthermometer.firebaseapp.com",
-    databaseURL: "https://gppthermometer.firebaseio.com",
-    projectId: "gppthermometer",
-    storageBucket: "gppthermometer.appspot.com",
-    messagingSenderId: "639524050247"
-  };
-  firebase.initializeApp(config);
-  var database = firebase.database();
-  </script>
-
-  <script type="text/javascript">
-  /**
-  * Handles the sign in button press.
-  */
-  function toggleSignIn() {
-      var x = document.getElementById("snackbar");
-      var user = firebase.auth().currentUser;
-      var email = document.getElementById('email').value;
-      var password = document.getElementById('password').value;
-      if (email.length == 0) {
-//        alert('Vul een emailadres in.');
-        x.innerHTML = "Vul een emailadres in";
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        return;
-      }
-      if (password.length == 0) {
-//        alert('Vul een wachtwoord in.');
-        x.innerHTML = "Vul een wachtwoord in";
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-        return;
-      }
-      if (user) {
-        if (!user.emailVerified) {
-    x.innerHTML = "Verifieer uw emailadres";
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-
-/*          firebase.auth().signOut().then(function() {
-            // Sign-out successful.
-          }).catch(function(error) {
-            // An error happened.
-          });*/
-
-    //      alert("verify de email");
-        }
-        else {
-          window.location = "/"
-        }
-  }
-
-      // Sign in with email and pass.
-      // [START authwithemail]
-      firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // [START_EXCLUDE]
-        if (errorCode === 'auth/wrong-password') {
-    //      alert('Verkeerd wachtwoord');
-          x.innerHTML = "Verkeerd wachtwoord";
-          x.className = "show";
-          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-
-        } else {
-          alert(errorMessage);
-        }
-        console.log(error);
-        // [END_EXCLUDE]
-      });
-      // [END authwithemail]
-  }
-
-  /**
-  * Sends an email verification to the user.
-  */
-  function sendEmailVerification() {
-    var x = document.getElementById("snackbar");
-    var email = document.getElementById('email').value;
-    var user = firebase.auth().currentUser;
-    if (email.length == 0) {
-//      alert('Vul een emailadres in.');
-      x.innerHTML = "Vul een emailadres in";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-
-      return;
-    }
-    // [START sendemailverification]
-    firebase.auth().currentUser.sendEmailVerification().then(function() {
-      // Email Verification sent!
-      // [START_EXCLUDE]
-  //    alert('Verificatie email is gestuurd.');
-      x.innerHTML = "Verificatie email is gestuurd";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      // [END_EXCLUDE]
-    }).catch(function(error){
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log(error.code);
-      // [START_EXCLUDE]
-      if (errorCode == 'auth/invalid-email') {
-        alert(errorMessage);
-      } else if (errorCode == 'auth/user-not-found') {
-        alert(errorMessage);
-      }
-      console.log(error);
-    });
-    // [END sendemailverification]
-  }
-  function sendPasswordReset() {
-    var x = document.getElementById("snackbar");
-    var email = document.getElementById('email').value;
-    if (email.length == 0) {
-  //    alert('Vul een emailadres in.');
-      x.innerHTML = "Vul een emailadres in";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-
-      return;
-    }
-    // [START sendpasswordemail]
-    firebase.auth().sendPasswordResetEmail(email).then(function() {
-      // Password Reset Email Sent!
-      // [START_EXCLUDE]
-  //    alert('Wachtwoord reset email is verstuurd.');
-      x.innerHTML = "Wachtwoord reset email is verstuurd";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-
-      // [END_EXCLUDE]
-    }).catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // [START_EXCLUDE]
-      if (errorCode == 'auth/invalid-email') {
-        alert(errorMessage);
-      } else if (errorCode == 'auth/user-not-found') {
-        alert(errorMessage);
-      }
-      console.log(error);
-      // [END_EXCLUDE]
-    });
-    // [END sendpasswordemail];
-  }
-
-  function logOut(){
-    firebase.auth().signOut().then(function() {
-      // Sign-out successful.
-    }).catch(function(error) {
-      // An error happened.
-    });
-  }
-  /**
-  * initApp handles setting up UI event listeners and registering Firebase auth listeners:
-  *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
-  *    out, and that is where we update the UI.
-  */
-  function initApp() {
-    var usersRef = firebase.database().ref("users");
-    // Listening for auth state changes.
-    // [START authstatelistener]
-    firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-          emailVerified = user.emailVerified;
-          usersRef.child(user.uid).update({
-            emailVerified: emailVerified
-          });
-          if (!user.emailVerified) {
-    //        alert("verify de email");
-          }
-          else {
-            window.location = "/"
-          }
-        }
-    });
-    // [END authstatelistener]
-    document.getElementById('sign-in').addEventListener('click', toggleSignIn, false);
-    document.getElementById('verify-email').addEventListener('click', sendEmailVerification, false);
-    document.getElementById('password-reset').addEventListener('click', sendPasswordReset, false);
-  }
-  window.onload = function() {
-    initApp();
-  };
-  </script>
 </head>
 <body>
   <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -228,7 +34,7 @@
             <h2 class="mdl-card__title-text">Log hier in voor de GPP Thermometer</h2>
           </div>
           <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-            <p><b>Vergeet niet uw emailadres te verifiëren anders kunt U niet inloggen.</b></p>
+            <p><b>Vergeet niet uw emailadres te verifiëren anders kunt u niet inloggen.</b></p>
 
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="email" id="email" name="email" placeholder="Email"/>
             &nbsp;&nbsp;&nbsp;
@@ -236,11 +42,7 @@
             <br/><br/>
             <button class="w3-btn w3-ripple w3-blue" id="sign-in" name="signin">Login</button>
             &nbsp;&nbsp;&nbsp;
-            <button class="w3-btn w3-ripple w3-indigo" id="verify-email" name="verify-email">Stuur verificatie email</button>
-            &nbsp;&nbsp;&nbsp;
             <button class="w3-btn w3-ripple w3-indigo" id="password-reset" name="verify-email">Stuur wachtwoord reset email</button>
-            &nbsp;&nbsp;&nbsp;
-            <button onclick="location.href='register.html';" class="w3-btn w3-ripple w3-indigo" id="register" name="register">Registreren</button>
           </div>
         </div>
       </div>
@@ -251,14 +53,6 @@
     </main>
   </div>
 </div>
-<script type="text/javascript" id="cookieinfo"
-	src="//cookieinfoscript.com/js/cookieinfo.min.js"
-  data-font-family="Roboto, Helvetica, sans-serif"
-  data-message="Zorg ervoor dat U uw cookies niet heeft uitstaan anders kunt U niet inloggen en geen betalingen maken."
-  data-bg="#8c8c8c"
-  data-fg="black"
-  data-linkmsg="Meer info over cookies"
-  data-close-text="Ok">
-</script>
+<script type="text/javascript" src="/loginscript.js"></script>
 </body>
 </html>

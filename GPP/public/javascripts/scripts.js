@@ -18,19 +18,25 @@ var database = firebase.database();
 var dataString;
 
 function logOut() {
-  firebase.auth().signOut().then(function() {
+  if (firebase.auth().currentUser) {
+    // [START signout]
+    firebase.auth().signOut().then(function() {
+      window.location = "/";
+      // Sign-out successful.
+    }).catch(function(error) {
+      // An error happened.
+    });
+    // [END signout]
+  } else {
     window.location = "login.html";
-    // Sign-out successful.
-  }).catch(function(error) {
-    // An error happened.
-  });
+  }
 }
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user && user.emailVerified == true) {
-    document.getElementById("displayName").innerHTML = user.displayName;
+    document.getElementById("displayName").innerHTML = "Welkom " + user.displayName;
   } else {
-    window.location = "login.html";
+    document.getElementById("Logoutbutton").textContent = "Inloggen"
   }
 });
 
@@ -45,31 +51,36 @@ function betaalLink() {
 
 var dataString = [];
 var arrayData = [];
-firebase.auth().onAuthStateChanged(function(user) {
-  var userId = firebase.auth().currentUser.uid;
 
-  firebase.database().ref('/users/' + userId + "/payments/").once('value').then(function(snapshot) {
-    snapshot.forEach(function(childSnapShot) {
-      childkey = childSnapShot.key;
-      childData = childSnapShot.val();
-      jsonData = JSON.stringify(childData);
-      popString = jsonData.split("PuntID").pop();
-      dataString = popString.slice(3, -23);
-      arrayData.push(dataString);
-      console.log(dataString);
+firebase.auth().onAuthStateChanged(function(user) {
+  if (firebase.auth().currentUser) {
+    var userId = firebase.auth().currentUser.uid;
+
+    firebase.database().ref('/users/' + userId + "/payments/").once('value').then(function(snapshot) {
+      snapshot.forEach(function(childSnapShot) {
+        childkey = childSnapShot.key;
+        childData = childSnapShot.val();
+        jsonData = JSON.stringify(childData);
+        popString = jsonData.split("PuntID").pop();
+        dataString = popString.slice(3, -23);
+        arrayData.push(dataString);
+        console.log(dataString);
+      });
     });
-  });
+  }
 });
 
 firebase.auth().onAuthStateChanged(function(user) {
-  var userId = firebase.auth().currentUser.uid;
-var ref = firebase.database().ref('/users/' + userId + "/payments/");
-var now = Date.now();
-var cutoff = now - 365.2425 * 24 * 60 * 60 * 1000; // Een jaar is precies 365,2425 dagen lang https://en.wikipedia.org/wiki/Year
-var old = ref.orderByChild('Time').endAt(cutoff).limitToLast(1);
-var listener = old.on('child_added', function(snapshot){
-  snapshot.ref.remove();
-});
+  if (firebase.auth().currentUser) {
+    var userId = firebase.auth().currentUser.uid;
+    var ref = firebase.database().ref('/users/' + userId + "/payments/");
+    var now = Date.now();
+    var cutoff = now - 365.2425 * 24 * 60 * 60 * 1000; // Een jaar is precies 365,2425 dagen lang https://en.wikipedia.org/wiki/Year
+    var old = ref.orderByChild('Time').endAt(cutoff).limitToLast(1);
+    var listener = old.on('child_added', function(snapshot) {
+      snapshot.ref.remove();
+    });
+  }
 });
 
 var features = [];
@@ -155,79 +166,14 @@ var clusters = new ol.layer.Vector({
     var featurelist = feature.N.features;
     if (featurelist.length > 0) {
       for (var i = 0, ii = featurelist.length; i < ii; ++i) {
-    var id = featurelist[i].N.id;
-    var geluidruimte = featurelist[i].N.geluidruimte;
-  }
-}
-    var style = styleCache[size];
-      if(size == 1 && arrayData.includes(JSON.stringify(id)) == true){
-        //GROEN
-      if(geluidruimte > 0.5){
-      style = new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 10,
-          stroke: new ol.style.Stroke({
-            color: '#fff'
-          }),
-          fill: new ol.style.Fill({
-            color: 'green'
-          })
-        }),
-        text: new ol.style.Text({
-          text: geluidruimte.toString(),
-          fill: new ol.style.Fill({
-            color: '#fff'
-          }),
-          font:'9px sans-serif'
-        })
-      });
-      styleCache[size] = style;
-      }
-      //GEEL
-      if(geluidruimte > 0 && geluidruimte < 0.5){
-      style = new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 10,
-          stroke: new ol.style.Stroke({
-            color: '#fff'
-          }),
-          fill: new ol.style.Fill({
-            color: 'yellow'
-          })
-        }),
-        text: new ol.style.Text({
-          text: geluidruimte.toString(),
-          fill: new ol.style.Fill({
-            color: '#fff'
-          })
-        })
-      });
-      styleCache[size] = style;
-      }
-      //ROOD
-      if(geluidruimte < 0){
-      style = new ol.style.Style({
-        image: new ol.style.Circle({
-          radius: 10,
-          stroke: new ol.style.Stroke({
-            color: '#fff'
-          }),
-          fill: new ol.style.Fill({
-            color: 'red'
-          })
-        }),
-        text: new ol.style.Text({
-          text: geluidruimte.toString(),
-          fill: new ol.style.Fill({
-            color: '#fff'
-          })
-        })
-      });
-      styleCache[size] = style;
+        var id = featurelist[i].N.id;
+        var geluidruimte = featurelist[i].N.geluidruimte;
       }
     }
-
-      else{
+    var style = styleCache[size];
+    if (size == 1 && arrayData.includes(JSON.stringify(id)) == true) {
+      //GROEN
+      if (geluidruimte > 0.5) {
         style = new ol.style.Style({
           image: new ol.style.Circle({
             radius: 10,
@@ -235,11 +181,33 @@ var clusters = new ol.layer.Vector({
               color: '#fff'
             }),
             fill: new ol.style.Fill({
-              color: '#3f51b5'
+              color: 'green'
             })
           }),
           text: new ol.style.Text({
-            text: size.toString(),
+            text: geluidruimte.toString(),
+            fill: new ol.style.Fill({
+              color: '#fff'
+            }),
+            font: '9px sans-serif'
+          })
+        });
+        styleCache[size] = style;
+      }
+      //GEEL
+      if (geluidruimte > 0 && geluidruimte < 0.5) {
+        style = new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 10,
+            stroke: new ol.style.Stroke({
+              color: '#fff'
+            }),
+            fill: new ol.style.Fill({
+              color: 'yellow'
+            })
+          }),
+          text: new ol.style.Text({
+            text: geluidruimte.toString(),
             fill: new ol.style.Fill({
               color: '#fff'
             })
@@ -247,6 +215,47 @@ var clusters = new ol.layer.Vector({
         });
         styleCache[size] = style;
       }
+      //ROOD
+      if (geluidruimte < 0) {
+        style = new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 10,
+            stroke: new ol.style.Stroke({
+              color: '#fff'
+            }),
+            fill: new ol.style.Fill({
+              color: 'red'
+            })
+          }),
+          text: new ol.style.Text({
+            text: geluidruimte.toString(),
+            fill: new ol.style.Fill({
+              color: '#fff'
+            })
+          })
+        });
+        styleCache[size] = style;
+      }
+    } else {
+      style = new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 10,
+          stroke: new ol.style.Stroke({
+            color: '#fff'
+          }),
+          fill: new ol.style.Fill({
+            color: '#3f51b5'
+          })
+        }),
+        text: new ol.style.Text({
+          text: size.toString(),
+          fill: new ol.style.Fill({
+            color: '#fff'
+          })
+        })
+      });
+      styleCache[size] = style;
+    }
     return style;
   }
 });
@@ -478,7 +487,7 @@ map.on('singleclick', function(evt) {
             document.getElementById("Xcoordinaat").innerHTML = Xcoordinaat;
             document.getElementById("Ycoordinaat").innerHTML = Ycoordinaat;
             document.getElementById("Zcoordinaat").innerHTML = Zcoordinaat + " m";
-            document.getElementById("gpp").innerHTML ="60 dB";
+            document.getElementById("gpp").innerHTML = "60 dB";
             if (!recent_bes) {
               document.getElementById("recent_bes").innerHTML = "--";
             } else {
@@ -501,7 +510,7 @@ map.on('singleclick', function(evt) {
 
             document.getElementById("beg_dat").innerHTML = beginDatumString;
 
-              document.getElementById("laatste_meting").innerHTML = "01-01-2019";
+            document.getElementById("laatste_meting").innerHTML = "01-01-2019";
 
             var i;
             var tablinks;
@@ -516,75 +525,97 @@ map.on('singleclick', function(evt) {
             document.getElementById("Geluid").style.display = "block";
             document.getElementById("Geluidbutton").className += " w3-indigo";
 
-            google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
+            google.charts.load('current', {
+              'packages': ['corechart']
+            });
+            google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
+            function drawChart() {
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('date', 'dag');
-        data.addColumn('number', 'Realtime');
-        data.addColumn('number', 'GPP');
-        data.addColumn('number', 'Voorspelling');
-        data.addRows([
-          [new Date(2018, 0, 1),  1, 100, null],
-          [new Date(2018, 1, 6),  10, 100, null],
-          [new Date(2018, 2, 3),  20,   100, null],
-          [new Date(2018, 3, 21), 30, 100, null],
-          [new Date(2018, 4, 7),  40, 100, null],
-          [new Date(2018, 5, 8),  50, 100,  null],
-          [new Date(2018, 6, 3),   60, 100,  null],
-          [new Date(2018, 7, 15),  70, 100, 70],
-          [new Date(2018, 8, 28),  null, 100, 80],
-          [new Date(2018, 9, 17), null, 100, 86],
-          [new Date(2018, 10, 6),  null,  100,  94],
-          [new Date(2018, 11, 18),  null,  100,  100],
-        ]);
+              var data = new google.visualization.DataTable();
+              data.addColumn('date', 'dag');
+              data.addColumn('number', 'Realtime');
+              data.addColumn('number', 'GPP');
+              data.addColumn('number', 'Voorspelling');
+              data.addRows([
+                [new Date(2018, 0, 1), 1, 100, null],
+                [new Date(2018, 1, 6), 10, 100, null],
+                [new Date(2018, 2, 3), 20, 100, null],
+                [new Date(2018, 3, 21), 30, 100, null],
+                [new Date(2018, 4, 7), 40, 100, null],
+                [new Date(2018, 5, 8), 50, 100, null],
+                [new Date(2018, 6, 3), 60, 100, null],
+                [new Date(2018, 7, 15), 70, 100, 70],
+                [new Date(2018, 8, 28), null, 100, 80],
+                [new Date(2018, 9, 17), null, 100, 86],
+                [new Date(2018, 10, 6), null, 100, 94],
+                [new Date(2018, 11, 18), null, 100, 100],
+              ]);
 
-        var options = {
-          title: 'GPP Realtime Percentage',
-          series: {
-            2: {
-              lineDashStyle: [2, 2],
-              color: '64B8F8'
+              var options = {
+                title: 'GPP Realtime Percentage',
+                series: {
+                  2: {
+                    lineDashStyle: [2, 2],
+                    color: '64B8F8'
+                  }
+                },
+                vAxis: {
+                  title: '%',
+                  ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                  viewWindow: {
+                    max: 100,
+                    min: 0
+                  }
+                },
+                hAxis: {
+                  title: 'Maand',
+                  format: 'MMM',
+                  gridlines: {
+                    count: 12
+                  }
+                },
+                legend: {
+                  position: 'top'
+                },
+                width: document.getElementById('tabid').getBoundingClientRect().width,
+                height: 400,
+                chartArea: {
+                  'width': '80%',
+                  'height': '80%'
+                }
+              };
+
+              var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
+
+              chart.draw(data, options);
+              overlay.setPosition(coordinate);
+
             }
-          },
-          vAxis: {
-            title: '%',
-            ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-            viewWindow: {
-              max: 100,
-              min: 0
+            if (firebase.auth().currentUser) {
+              var x = document.getElementById("popup");
+              x.style.minWidth = "0px";
+              content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="betaalLink()" style="border-radius: 10px;">Kopen</button>';
+            } else {
+              var x = document.getElementById("popup");
+              x.style.minWidth = "0px";
+              content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()" style="border-radius: 10px;">Registreren</button>';
             }
-          },
-          hAxis: {
-            title: 'Maand',
-            format: 'MMM',
-            gridlines: {
-              count: 12
-            }
-          },
-          legend: {
-            position: 'top'
-          },
-          width: document.getElementById('tabid').getBoundingClientRect().width,
-          height: 400,
-          chartArea: {
-            'width': '80%',
-            'height': '80%'
           }
-        };
-
-        var chart = new google.visualization.LineChart(document.getElementById('linechart_material'));
-
-        chart.draw(data, options);
-        overlay.setPosition(coordinate);
-
-      }
-            var x = document.getElementById("popup");
-            x.style.minWidth = "0px";
-            content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="betaalLink()" style="border-radius: 10px;">Kopen</button>';
-          }
+          var overlap = document.getElementById("overlap");
+          var Locatie = document.getElementById("Locatie");
+          var Wetgeving = document.getElementById("Wetgeving");
+          var Geluid = document.getElementById("Geluid");
+          var bar = document.getElementById("bar");
+          overlap.style.display = "none";
+          Geluid.style.opacity = 1;
+          bar.style.opacity = 1;
+          Locatie.style.opacity = 1;
+          Wetgeving.style.opacity = 1;
+          Geluid.style.pointerEvents = "auto";
+          bar.style.pointerEvents = "auto";
+          Locatie.style.pointerEvents = "auto";
+          Wetgeving.style.pointerEvents = "auto";
         } else {
           var x = document.getElementById("popup");
           x.style.minWidth = "200px";
@@ -645,4 +676,8 @@ function check_element(ele) {
 
 function set_ele(set_element) {
   check_element(set_element);
+}
+
+function GotoRegister() {
+  window.location = "register.html";
 }

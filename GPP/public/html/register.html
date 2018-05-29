@@ -19,109 +19,7 @@
     border-radius: 5px;
   }
   </style>
-  <!-- Import and configure the Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/4.13.0/firebase.js"></script>
-  <script>
-  // Initialize Firebase
-  var config = {
-    apiKey: "AIzaSyCmeDbv8eGM8sPlpIGBiT6fxJJD-wujSBM",
-    authDomain: "gppthermometer.firebaseapp.com",
-    databaseURL: "https://gppthermometer.firebaseio.com",
-    projectId: "gppthermometer",
-    storageBucket: "gppthermometer.appspot.com",
-    messagingSenderId: "639524050247"
-  };
-  firebase.initializeApp(config);
-  var database = firebase.database();
-  </script>
-
-  <script type="text/javascript">
-  /**
-  * Handles the sign up button press.
-  */
-  function handleSignUp() {
-    var x = document.getElementById("snackbar");
-    var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    var displayName = document.getElementById('username').value;
-    var usersRef = firebase.database().ref("users");
-    if (displayName.length == 0) {
-//      alert('Vul een gebruikersnaam in');
-      x.innerHTML = "Vul een gebruikersnaam in";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      return;
-    }
-    if (email.length == 0) {
-//      alert('Vul een emailadres in.');
-      x.innerHTML = "Vul een emailadres in";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      return;
-    }
-    if (password.length == 0) {
-//      alert('Vul een wachtwoord in.');
-      x.innerHTML = "Vul een wachtwoord in";
-      x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      return;
-    }
-    // Sign in with email and pass.
-    // [START createwithemail]
-    firebase.auth().createUserWithEmailAndPassword(email, password).then(function(user) {
-      // [END createwithemail]
-      user.updateProfile({
-        displayName: displayName
-      }).then(function() {
-
-      }, function(error) {
-        // An error happened.
-      });
-      email = user.email;
-      displayName = displayName;
-      usersRef.child(user.uid).set({
-        email: email,
-        displayName: displayName
-      });
-      window.location = "login.html"
-    }, function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // [START_EXCLUDE]
-      if (errorCode == 'auth/weak-password') {
-//        alert('Dit wachtwoord is niet sterk genoeg.');
-        x.innerHTML = "Dit wachtwoord is niet sterk genoeg";
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-      } else {
-        alert(errorMessage);
-      }
-      console.log(error);
-      // [END_EXCLUDE]
-    });
-    // [END createwithemail]
-  }
-
-  /**
-  * initApp handles setting up UI event listeners and registering Firebase auth listeners:
-  *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
-  *    out, and that is where we update the UI.
-  */
-  function initApp() {
-    // Listening for auth state changes.
-    // [START authstatelistener]
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (user) {
-      }
-    });
-    // [END authstatelistener]
-    document.getElementById('sign-up').addEventListener('click', handleSignUp, false);
-  }
-  window.onload = function() {
-    initApp();
-  };
-  </script>
 </head>
 <body>
   <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -134,10 +32,10 @@
       <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
         <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop" style="min-height: 0px;">
           <div class="mdl-card__title w3-indigo mdl-color-text--white">
-            <h2 class="mdl-card__title-text">Registeer hier uw account voor de GPP Thermometer.</h2>
+            <h2 class="mdl-card__title-text">Registreer hier uw account voor de GPP Thermometer.</h2>
           </div>
           <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-
+            <p>Vul een geldig email adres in, want u moet uw email verifiëren voordat u kunt inloggen.</p>
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="username" name="username" placeholder="Gebruikersnaam"/>
             &nbsp;&nbsp;&nbsp;
             <input class="mdl-textfield__input" style="display:inline;width:auto;" type="email" id="email" name="email" placeholder="Email"/>
@@ -146,7 +44,7 @@
             <br/><br/>
             <button class="w3-btn w3-ripple w3-blue" id="sign-up" name="signup">Registreren</button>
             &nbsp;&nbsp;&nbsp;
-            <button class="w3-btn w3-ripple w3-indigo" id="terug" name="terug" onclick="window.location = 'login.html';">Terug</button>
+            <button class="w3-btn w3-ripple w3-indigo" id="terug" name="terug" onclick="window.location = '/';">Terug</button>
           </div>
         </div>
       </div>
@@ -156,5 +54,6 @@
       </footer>
     </main>
   </div>
+  <script type="text/javascript" src="/registerscript.js"></script>
 </body>
 </html>
