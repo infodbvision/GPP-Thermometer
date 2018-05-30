@@ -339,6 +339,51 @@ map.on('singleclick', function(evt) {
               document.getElementById("laatste_meting").innerHTML = meetDatumString;
             }
 
+            //TODO hier wanneer gekocht etc.
+
+            firebase.auth().onAuthStateChanged(function(user) {
+              if (firebase.auth().currentUser) {
+                var userId = firebase.auth().currentUser.uid;
+
+                firebase.database().ref('/users/' + userId + "/payments/").once('value').then(function(snapshot) {
+                  snapshot.forEach(function(childSnapShot) {
+                    childkey = childSnapShot.key;
+                    childData = childSnapShot.val();
+                    console.log(childData);
+                    jsonData = JSON.stringify(childData);
+                    function selectWhere(childData, id) {
+    for (var i = 0; i < childData.length; i++) {
+        if (childData[i][id] !== null) return childData[i][id];
+    }
+    return null;
+}
+var key2value = selectWhere(childData, "1");
+console.log(key2value);
+          //          if(arrayData.includes(JSON.stringify(id)) == true){
+          //          console.log(dataString);
+          //        }
+                    //d = new Date(datumstring*1);
+          //          document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
+                    var i;
+                    for(i = 0; i < arrayData.length; i++){
+                      if(arrayData[i] == id){
+                        for(x in jsonData){
+                        }
+              //          console.log(dataString + " " + id);
+              popString = jsonData.split("Time").pop();
+              datumstring = popString.slice(2, -1);
+              arrayData.push(datumstring);
+              console.log(datumString);
+              //          d = new Date(datumstring*1);
+              //          document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
+                      }
+                    }
+                  });
+                });
+              }
+            });
+            //document.getElementById("vervaldatum").innerHTML = meetDatumString;
+
             var i;
             var tablinks;
             var x = document.getElementsByClassName("tabs");
