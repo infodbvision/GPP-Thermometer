@@ -29,8 +29,6 @@ router.get('/',function(req, res) {
           console.error(payment.error);
           res.render('payment-error', { 'error': payment.error });
         }else {
-      //  console.log(payment);
-
         //store the payment.id in the session obj
         sess.paymentId = payment.id;
 

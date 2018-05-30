@@ -21,21 +21,18 @@ function handleSignUp() {
   var usersRef = firebase.database().ref("users");
   var user = firebase.auth().currentUser;
   if (displayName.length == 0) {
-//      alert('Vul een gebruikersnaam in');
     x.innerHTML = "Vul een gebruikersnaam in";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
     return;
   }
   if (email.length == 0) {
-//      alert('Vul een emailadres in.');
     x.innerHTML = "Vul een emailadres in";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
     return;
   }
   if (password.length == 0) {
-//      alert('Vul een wachtwoord in.');
     x.innerHTML = "Vul een wachtwoord in";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -61,7 +58,6 @@ function handleSignUp() {
     firebase.auth().currentUser.sendEmailVerification().then(function() {
       // Email Verification sent!
       // [START_EXCLUDE]
-  //    alert('Verificatie email is gestuurd.');
   firebase.auth().signOut().then(function() {
     // Sign-out successful.
       x.innerHTML = "Verificatie email is gestuurd";
@@ -89,7 +85,6 @@ function handleSignUp() {
     var errorMessage = error.message;
     // [START_EXCLUDE]
     if (errorCode == 'auth/weak-password') {
-//        alert('Dit wachtwoord is niet sterk genoeg.');
       x.innerHTML = "Dit wachtwoord is niet sterk genoeg";
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);

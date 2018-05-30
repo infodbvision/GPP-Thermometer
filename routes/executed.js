@@ -6,7 +6,7 @@ var admin = require("firebase-admin");
 require('firebase/auth');
 require('firebase/database');
 
-var serviceAccount = require("C:/Users/Mees Gieling/Github/GPP Thermometer/GPP/gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
+var serviceAccount = require("C:/Users/Mees Gieling/Github/GPP Thermometer/gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -25,10 +25,7 @@ var mollie = new Mollie.API.Client;
       messagingSenderId: "639524050247"
     };
     firebase.initializeApp(config);
-    // links to my firebase database
     var db = firebase.database();
-    //sets the reference to the root of the database, or the server I'm not quite sure.
-    //var ref = db.ref("/");
 router.get('/',function(req, res) {
     var paymentId = req.session.paymentId;
     mollie.payments.get(paymentId, function(payment) {

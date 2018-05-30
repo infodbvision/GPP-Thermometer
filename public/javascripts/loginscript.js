@@ -19,14 +19,12 @@ function toggleSignIn() {
     var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
     if (email.length == 0) {
-//        alert('Vul een emailadres in.');
       x.innerHTML = "Vul een emailadres in";
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
       return;
     }
     if (password.length == 0) {
-//        alert('Vul een wachtwoord in.');
       x.innerHTML = "Vul een wachtwoord in";
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -37,14 +35,6 @@ function toggleSignIn() {
   x.innerHTML = "Verifieer uw emailadres";
   x.className = "show";
   setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-
-/*          firebase.auth().signOut().then(function() {
-          // Sign-out successful.
-        }).catch(function(error) {
-          // An error happened.
-        });*/
-
-  //      alert("verify de email");
       }
       else {
         window.location = "/"
@@ -59,7 +49,6 @@ function toggleSignIn() {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode === 'auth/wrong-password') {
-  //      alert('Verkeerd wachtwoord');
         x.innerHTML = "Verkeerd wachtwoord";
         x.className = "show";
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -81,7 +70,6 @@ function sendEmailVerification() {
   var email = document.getElementById('email').value;
   var user = firebase.auth().currentUser;
   if (email.length == 0) {
-//      alert('Vul een emailadres in.');
     x.innerHTML = "Vul een emailadres in";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -92,7 +80,6 @@ function sendEmailVerification() {
   firebase.auth().currentUser.sendEmailVerification().then(function() {
     // Email Verification sent!
     // [START_EXCLUDE]
-//    alert('Verificatie email is gestuurd.');
     x.innerHTML = "Verificatie email is gestuurd";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -115,7 +102,6 @@ function sendPasswordReset() {
   var x = document.getElementById("snackbar");
   var email = document.getElementById('email').value;
   if (email.length == 0) {
-//    alert('Vul een emailadres in.');
     x.innerHTML = "Vul een emailadres in";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
@@ -126,7 +112,6 @@ function sendPasswordReset() {
   firebase.auth().sendPasswordResetEmail(email).then(function() {
     // Password Reset Email Sent!
     // [START_EXCLUDE]
-//    alert('Wachtwoord reset email is verstuurd.');
     x.innerHTML = "Wachtwoord reset email is verstuurd";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
