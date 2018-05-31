@@ -64,7 +64,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         popString = jsonData.split("PuntID").pop();
         dataString = popString.slice(3, -23);
         arrayData.push(dataString);
-        console.log(dataString);
+    //    console.log(dataString);
       });
     });
   }
@@ -339,8 +339,6 @@ map.on('singleclick', function(evt) {
               document.getElementById("laatste_meting").innerHTML = meetDatumString;
             }
 
-            //TODO hier wanneer gekocht etc.
-
             firebase.auth().onAuthStateChanged(function(user) {
               if (firebase.auth().currentUser) {
                 var userId = firebase.auth().currentUser.uid;
@@ -349,40 +347,23 @@ map.on('singleclick', function(evt) {
                   snapshot.forEach(function(childSnapShot) {
                     childkey = childSnapShot.key;
                     childData = childSnapShot.val();
-                    console.log(childData);
                     jsonData = JSON.stringify(childData);
-                    function selectWhere(childData, id) {
-    for (var i = 0; i < childData.length; i++) {
-        if (childData[i][id] !== null) return childData[i][id];
-    }
-    return null;
-}
-var key2value = selectWhere(childData, "1");
-console.log(key2value);
-          //          if(arrayData.includes(JSON.stringify(id)) == true){
-          //          console.log(dataString);
-          //        }
-                    //d = new Date(datumstring*1);
-          //          document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
-                    var i;
-                    for(i = 0; i < arrayData.length; i++){
-                      if(arrayData[i] == id){
-                        for(x in jsonData){
-                        }
-              //          console.log(dataString + " " + id);
-              popString = jsonData.split("Time").pop();
-              datumstring = popString.slice(2, -1);
-              arrayData.push(datumstring);
-              console.log(datumString);
-              //          d = new Date(datumstring*1);
-              //          document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
-                      }
+                    popString = jsonData.split("PuntID").pop();
+                    dataString = popString.slice(3, -23);
+                    arrayData.push(dataString);
+                    popString = jsonData.split("Time").pop();
+                    datumstring = popString.slice(2, -1);
+                    arrayData.push(datumstring);
+                    if(dataString == id){
+                      d = new Date(datumstring*1);
+                      document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
+                      var vervald = new Date(Number(d) + 365.2425 * 24 * 60 * 60 * 1000);
+                      document.getElementById("vervaldatum").innerHTML = vervald.toLocaleDateString();
                     }
                   });
                 });
               }
             });
-            //document.getElementById("vervaldatum").innerHTML = meetDatumString;
 
             var i;
             var tablinks;
@@ -556,6 +537,8 @@ console.log(key2value);
             document.getElementById("beg_dat").innerHTML = beginDatumString;
 
             document.getElementById("laatste_meting").innerHTML = "01-01-2019";
+            document.getElementById("datumaankoop").innerHTML = "--";
+            document.getElementById("vervaldatum").innerHTML = "--";
 
             var i;
             var tablinks;
