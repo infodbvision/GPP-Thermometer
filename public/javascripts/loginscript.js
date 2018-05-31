@@ -155,10 +155,8 @@ function initApp() {
         usersRef.child(user.uid).update({
           emailVerified: emailVerified
         });
-        if (!user.emailVerified) {
-        }
-        else {
-          window.location = "/"
+        if (user.emailVerified) {
+            window.location = "/";
         }
       }
   });
