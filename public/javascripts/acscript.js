@@ -22,6 +22,5 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user && user.emailVerified == true) {
     document.getElementById("displayName").innerHTML = user.displayName;
   } else {
-    window.location = "login.html";
   }
 });
