@@ -11,7 +11,7 @@ firebase.initializeApp(config);
 
 function logOut() {
   firebase.auth().signOut().then(function() {
-    window.location = "login.html";
+    window.location = "/";
     // Sign-out successful.
   }).catch(function(error) {
     // An error happened.
@@ -22,5 +22,6 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user && user.emailVerified == true) {
     document.getElementById("displayName").innerHTML = user.displayName;
   } else {
+    document.getElementById("Logoutbutton").textContent = "Inloggen";
   }
 });
