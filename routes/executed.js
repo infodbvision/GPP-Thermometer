@@ -39,19 +39,24 @@ router.get('/',function(req, res) {
           var idToken = req.cookies['idToken'];
           paymentStatus = payment.status;
           paymentDescription = payment.description;
-          var usersRef = firebase.database().ref("users");
-
-          admin.auth().verifyIdToken(idToken)
-            .then(function(decodedToken) {
-              var uid = decodedToken.uid;
-              console.log("USER ID IS: " + uid);
-              usersRef.child(uid + "/payments").push({
-                Time: firebase.database.ServerValue.TIMESTAMP,
-                PuntID: paymentDescription
+          var paymentArray = paymentDescription.split(",");
+          console.log(paymentArray);
+          paymentArray.forEach(function(id){
+            var payments = id;
+            console.log(payments);
+            var usersRef = firebase.database().ref("users");
+            admin.auth().verifyIdToken(idToken)
+              .then(function(decodedToken) {
+                var uid = decodedToken.uid;
+                console.log("USER ID IS: " + uid);
+                usersRef.child(uid + "/payments").push({
+                  Time: firebase.database.ServerValue.TIMESTAMP,
+                  PuntID: payments
+                });
+              }).catch(function(error) {
+                console.log(error);
               });
-            }).catch(function(error) {
-              console.log(error);
-            });
+          });
 
             res.render('executed-payment', { 'payment': payment });
 

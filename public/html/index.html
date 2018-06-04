@@ -51,7 +51,25 @@
     <a id="Logoutbutton" class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="logOut()">Uitloggen</a>
     <a class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="window.location = 'about.html';">Over</a>
     <a class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="window.location = 'contact.html';">Contact</a>
-<!--    <a class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none">shopping_cart</a>-->
+    <button id="winkelwagen" disabled class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none" onclick="openwagen()">shopping_cart</button>
+  </div>
+
+  <div id="modal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top">
+        <header class="w3-container w3-blue">
+          <span onclick="closewagen()"
+          class="w3-button w3-display-topright">&times;</span>
+          <h2>Winkelwagen</h2>
+        </header>
+      <div class="w3-container">
+        <h5>De volgende punten zitten in uw winkelwagen</h5>
+        <p>IDs: <span id = "ids" style="float:right;"></span></p>
+      </div>
+      <div class="w3-container" style="padding-bottom: 10px;">
+        <p>Totaal: <span id = "totaalbedrag" style="float:right;"></span></p>
+        <button class="w3-btn w3-ripple w3-blue" onclick="betaalLink()">Kopen</button>
+      </div>
+    </div>
   </div>
 
   <div class="w3-row-padding" style="padding-top:10px; padding-left: 0px;">
@@ -97,6 +115,7 @@
       <div id="result"></div>
     </div>
   </div>
+  <div id="snackbar"></div>
   <script type="text/javascript" src="/scripts.js"></script>
 </body>
 <footer>

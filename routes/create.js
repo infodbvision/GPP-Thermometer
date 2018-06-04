@@ -15,9 +15,11 @@ router.get('/',function(req, res) {
 
     redirectUrl = "http://" + req.headers.host + "/execute";
 
-
+    var paymentArray = [];
+    var payments = req.param('description');
+    var paymentString = payments.split(",");
     var payment = {
-    	amount: 20,
+    	amount: 20 * paymentString.length,
     	description: req.param('description'),
     	redirectUrl: redirectUrl,
     	method: "ideal"
