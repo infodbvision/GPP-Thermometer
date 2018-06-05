@@ -263,3 +263,5 @@ However, delay the fade out process for 2.5 seconds */
     from {bottom: 5px; opacity: 1;}
     to {bottom: 0; opacity: 0;}
 }
+
+@media (min-width: 993px){.w3-modal-content{width:600px;}

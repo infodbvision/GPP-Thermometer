@@ -41,62 +41,87 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 var ids = [];
+var clonearray = [];
+
 function betaalLink() {
+  var x = document.getElementById("snackbar");
   firebase.auth().onAuthStateChanged(function(user) {
     firebase.auth().currentUser.getIdToken( /* forceRefresh */ true).then(function(idToken) {
       var cookie = document.cookie = "idToken=" + idToken;
-      console.log(ids);
-      location.href = "create?description=" + ids;
+      if (typeof ids !== 'undefined' && ids.length > 0) {
+        location.href = "create?description=" + ids;
+      } else {
+        x.innerHTML = "Er zitten geen punten in de winkelwagen";
+        x.className = "show";
+        setTimeout(function() {
+          x.className = x.className.replace("show", "");
+        }, 2000);
+        return;
+      }
     });
   });
 }
 
 var element;
 var list;
-function openwagen(){
-  document.getElementById('modal').style.display='block'
+var entry;
+
+function openwagen() {
+  document.getElementById('modal').style.display = 'block';
   list = document.getElementById('ids');
-  ids.forEach(function(entry){
+  ids.forEach(function(entry) {
     element = document.createElement('span');
     element.setAttribute("id", "" + list.children.length);
-    element.innerHTML = entry + "<button onclick='removeItem(id)'> X</button>" + "<br>";
+    element.innerHTML = entry + " " + "<button class='w3-button w3-small w3-ripple w3-hover-none w3-hover-text-red' style='padding:inherit; vertical-align: text-top;' onclick='removeItem(this)'>&times;</button>" + "<br>";
     document.getElementById("ids").appendChild(element);
-});
-}
-//TODO verwijderen uit winkelwagen wil nog niet
-function removeItem(){
-  var index = ids.indexOf(id);
-  console.log(index);
-  console.log(ids);
-//  if(index > -1){
-    ids.splice(index, 1);
-//  }
+  });
 }
 
-function closewagen(){
-  document.getElementById('modal').style.display='none'
-  while(list.hasChildNodes()){
-  list.removeChild(list.firstChild);
+function removeItem(span) {
+  var pp = span.parentNode.parentNode;
+  var p = span.parentNode;
+  var position = p.getAttribute('id');
+  pp.removeChild(p);
+  ids.splice(position, 1);
+  closewagen();
+  openwagen();
+  if (typeof ids !== 'undefined' && ids.length > 0) {
+    document.getElementById("totaalbedrag").innerHTML = "€ " + 20 * ids.length;
+  } else {
+    document.getElementById("totaalbedrag").innerHTML = "€ 0";
+  }
 }
+
+function closewagen() {
+  document.getElementById('modal').style.display = 'none'
+  while (list.hasChildNodes()) {
+    list.removeChild(list.firstChild);
+  }
 }
 
 function toevoegen() {
   var x = document.getElementById("snackbar");
-  if(!ids.includes(id)){
-  ids.push(id);
-  console.log(ids);
-  document.getElementById("totaalbedrag").innerHTML ="€ " + 20 * ids.length;
-  document.getElementById("winkelwagen").disabled = false;
-  x.innerHTML = "Punt is toegevoegd aan de winkelwagen";
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-  return;
-} else{
-  x.innerHTML = "Punt zit al in de winkelwagen";
-  x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-  return;
-}
+  if (!ids.includes(id)) {
+    ids.push(id);
+    if (typeof ids !== 'undefined' && ids.length > 0) {
+      document.getElementById("totaalbedrag").innerHTML = "€ " + 20 * ids.length;
+    } else {
+      document.getElementById("totaalbedrag").innerHTML = "€ 0";
+    }
+    x.innerHTML = "Punt is toegevoegd aan de winkelwagen";
+    x.className = "show";
+    setTimeout(function() {
+      x.className = x.className.replace("show", "");
+    }, 2000);
+    return;
+  } else {
+    x.innerHTML = "Punt zit al in de winkelwagen";
+    x.className = "show";
+    setTimeout(function() {
+      x.className = x.className.replace("show", "");
+    }, 2000);
+    return;
+  }
 }
 
 var dataString = [];
@@ -114,7 +139,6 @@ firebase.auth().onAuthStateChanged(function(user) {
         popString = jsonData.split("PuntID").pop();
         dataString = popString.slice(3, -23);
         arrayData.push(dataString);
-    //    console.log(dataString);
       });
     });
   }
@@ -404,8 +428,8 @@ map.on('singleclick', function(evt) {
                     popString = jsonData.split("Time").pop();
                     datumstring = popString.slice(2, -1);
                     arrayData.push(datumstring);
-                    if(dataString == id){
-                      d = new Date(datumstring*1);
+                    if (dataString == id) {
+                      d = new Date(datumstring * 1);
                       document.getElementById("datumaankoop").innerHTML = d.toLocaleDateString();
                       var vervald = new Date(Number(d) + 365.2425 * 24 * 60 * 60 * 1000);
                       document.getElementById("vervaldatum").innerHTML = vervald.toLocaleDateString();
@@ -674,10 +698,16 @@ map.on('singleclick', function(evt) {
               var x = document.getElementById("popup");
               x.style.minWidth = "0px";
               content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="toevoegen()" style="border-radius: 10px;">Toevoegen aan winkelwagen</button>';
+
+              var y = document.getElementById("buybutton");
+              y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="betaalLink()">Kopen</button>';
             } else {
               var x = document.getElementById("popup");
               x.style.minWidth = "0px";
-              content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()" style="border-radius: 10px;">Registreren</button>';
+              content.innerHTML = '<button class="w3-btn w3-ripple w3-indigo" onclick="toevoegen()" style="border-radius: 10px;">Toevoegen aan winkelwagen</button>';
+
+              var y = document.getElementById("buybutton");
+              y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()">Registreren</button>';
             }
           }
           var overlap = document.getElementById("overlap");
