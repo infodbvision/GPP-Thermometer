@@ -41,8 +41,6 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 var ids = [];
-var clonearray = [];
-
 function betaalLink() {
   var x = document.getElementById("snackbar");
   firebase.auth().onAuthStateChanged(function(user) {
@@ -159,7 +157,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 var features = [];
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4iy7rZcBrC7oO5F4mEsBn1FqZo1qyks5bF66OwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4izmNDSPyHtxAzkmepFB2PHXWvFx4ks5bIhIewA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {

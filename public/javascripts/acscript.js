@@ -24,7 +24,7 @@ function logOut() {
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user && user.emailVerified == true) {
-    document.getElementById("displayName").innerHTML = user.displayName;
+    document.getElementById("displayName").innerHTML = "Welkom " + user.displayName;
   } else {
     document.getElementById("Logoutbutton").textContent = "Inloggen";
   }
