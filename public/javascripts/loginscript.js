@@ -21,23 +21,20 @@ function toggleSignIn() {
     if (email.length == 0) {
       x.innerHTML = "Vul een emailadres in";
       x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       return;
     }
     if (password.length == 0) {
       x.innerHTML = "Vul een wachtwoord in";
       x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       return;
     }
     if (user) {
       if (!user.emailVerified) {
   x.innerHTML = "Verifieer uw emailadres";
   x.className = "show";
-  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-      }
-      else {
-        window.location = "/"
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       }
 }
 
@@ -51,10 +48,11 @@ function toggleSignIn() {
       if (errorCode === 'auth/wrong-password') {
         x.innerHTML = "Verkeerd wachtwoord";
         x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       } else {
-        alert(errorMessage);
+        x.innerHTML = "Er bestaat geen gebruiker met deze gegevens";
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       }
       console.log(error);
       // [END_EXCLUDE]
@@ -62,49 +60,13 @@ function toggleSignIn() {
     // [END authwithemail]
 }
 
-/**
-* Sends an email verification to the user.
-*/
-function sendEmailVerification() {
-  var x = document.getElementById("snackbar");
-  var email = document.getElementById('email').value;
-  var user = firebase.auth().currentUser;
-  if (email.length == 0) {
-    x.innerHTML = "Vul een emailadres in";
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-
-    return;
-  }
-  // [START sendemailverification]
-  firebase.auth().currentUser.sendEmailVerification().then(function() {
-    // Email Verification sent!
-    // [START_EXCLUDE]
-    x.innerHTML = "Verificatie email is gestuurd";
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-    // [END_EXCLUDE]
-  }).catch(function(error){
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    console.log(error.code);
-    // [START_EXCLUDE]
-    if (errorCode == 'auth/invalid-email') {
-      alert(errorMessage);
-    } else if (errorCode == 'auth/user-not-found') {
-      alert(errorMessage);
-    }
-    console.log(error);
-  });
-  // [END sendemailverification]
-}
 function sendPasswordReset() {
   var x = document.getElementById("snackbar");
   var email = document.getElementById('email').value;
   if (email.length == 0) {
     x.innerHTML = "Vul een emailadres in";
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
 
     return;
   }
@@ -114,7 +76,7 @@ function sendPasswordReset() {
     // [START_EXCLUDE]
     x.innerHTML = "Wachtwoord reset email is verstuurd";
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
 
     // [END_EXCLUDE]
   }).catch(function(error) {
@@ -123,9 +85,13 @@ function sendPasswordReset() {
     var errorMessage = error.message;
     // [START_EXCLUDE]
     if (errorCode == 'auth/invalid-email') {
-      alert(errorMessage);
+      x.innerHTML = "Dit is geen geldig emailadres";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     } else if (errorCode == 'auth/user-not-found') {
-      alert(errorMessage);
+      x.innerHTML = "Er bestaat geen gebruiker met dit emailadres";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     }
     console.log(error);
     // [END_EXCLUDE]
@@ -147,6 +113,7 @@ function logOut(){
 */
 function initApp() {
   var usersRef = firebase.database().ref("users");
+  var x = document.getElementById("snackbar");
   // Listening for auth state changes.
   // [START authstatelistener]
   firebase.auth().onAuthStateChanged(function(user) {
@@ -157,6 +124,11 @@ function initApp() {
         });
         if (user.emailVerified) {
             window.location = "/";
+        }
+        if(!user.emailVerified) {
+          x.innerHTML = "Verifieer uw emailadres";
+          x.className = "show";
+          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
         }
       }
   });

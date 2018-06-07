@@ -23,19 +23,19 @@ function handleSignUp() {
   if (displayName.length == 0) {
     x.innerHTML = "Vul een gebruikersnaam in";
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     return;
   }
   if (email.length == 0) {
     x.innerHTML = "Vul een emailadres in";
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     return;
   }
   if (password.length == 0) {
     x.innerHTML = "Vul een wachtwoord in";
     x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     return;
   }
   // Sign in with email and pass.
@@ -62,7 +62,7 @@ function handleSignUp() {
     // Sign-out successful.
       x.innerHTML = "Verificatie email is gestuurd";
       x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); window.location = "/"; }, 2000);
+      setTimeout(function(){ x.className = x.className.replace("show", ""); window.location = "/"; }, 2500);
     }).catch(function(error) {
       // An error happened.
     });
@@ -73,9 +73,13 @@ function handleSignUp() {
       console.log(error.code);
       // [START_EXCLUDE]
       if (errorCode == 'auth/invalid-email') {
-        alert(errorMessage);
+        x.innerHTML = "Dit is geen geldig emailadres";
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       } else if (errorCode == 'auth/user-not-found') {
-        alert(errorMessage);
+        x.innerHTML = "Er bestaat geen gebruiker met dit emailadres";
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       }
       console.log(error);
     });
@@ -85,11 +89,19 @@ function handleSignUp() {
     var errorMessage = error.message;
     // [START_EXCLUDE]
     if (errorCode == 'auth/weak-password') {
-      x.innerHTML = "Dit wachtwoord is niet sterk genoeg";
+      x.innerHTML = "Dit wachtwoord is niet sterk genoeg <br> Maak uw wachtwoord minstens 6 tekens lang";
       x.className = "show";
-      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
-    } else {
-      alert(errorMessage);
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
+    }
+    if (errorCode == 'auth/invalid-email') {
+      x.innerHTML = "Dit is geen geldig emailadres";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
+    }
+    if(errorCode == 'auth/email-already-in-use'){
+      x.innerHTML = "Dit emailadres is al in gebruik";
+      x.className = "show";
+      setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     }
     console.log(error);
     // [END_EXCLUDE]

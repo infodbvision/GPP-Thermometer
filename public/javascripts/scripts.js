@@ -53,7 +53,7 @@ function betaalLink() {
         x.className = "show";
         setTimeout(function() {
           x.className = x.className.replace("show", "");
-        }, 2000);
+        }, 2500);
         return;
       }
     });
@@ -110,14 +110,14 @@ function toevoegen() {
     x.className = "show";
     setTimeout(function() {
       x.className = x.className.replace("show", "");
-    }, 2000);
+    }, 2500);
     return;
   } else {
     x.innerHTML = "Punt zit al in de winkelwagen";
     x.className = "show";
     setTimeout(function() {
       x.className = x.className.replace("show", "");
-    }, 2000);
+    }, 2500);
     return;
   }
 }
