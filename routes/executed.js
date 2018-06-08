@@ -40,15 +40,12 @@ router.get('/',function(req, res) {
           paymentStatus = payment.status;
           paymentDescription = payment.description;
           var paymentArray = paymentDescription.split(",");
-          console.log(paymentArray);
           paymentArray.forEach(function(id){
             var payments = id;
-            console.log(payments);
             var usersRef = firebase.database().ref("users");
             admin.auth().verifyIdToken(idToken)
               .then(function(decodedToken) {
                 var uid = decodedToken.uid;
-                console.log("USER ID IS: " + uid);
                 usersRef.child(uid + "/payments").push({
                   Time: firebase.database.ServerValue.TIMESTAMP,
                   PuntID: payments

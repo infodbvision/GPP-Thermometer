@@ -88,7 +88,7 @@ function sendPasswordReset() {
       x.innerHTML = "Dit is geen geldig emailadres";
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
-    } else if (errorCode == 'auth/user-not-found') {
+    } if (errorCode == 'auth/user-not-found') {
       x.innerHTML = "Er bestaat geen gebruiker met dit emailadres";
       x.className = "show";
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);

@@ -2,6 +2,53 @@ var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 var id;
+var arrayData = [];
+
+// Get IE or Edge browser version
+var version = detectIE();
+if (version === false) {
+alert("niet ie of edge");
+} else if (version >= 12) {
+alert("edge");
+} else {
+alert("ie versie" + version)
+}
+// add details to debug result
+console.log( window.navigator.userAgent);
+/**
+* detect IE
+* returns version of IE or false, if browser is not Internet Explorer
+*/
+function detectIE() {
+var ua = window.navigator.userAgent;
+// Test values; Uncomment to check result …
+// IE 10
+// ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+// IE 11
+// ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+// Edge 12 (Spartan)
+// ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+// Edge 13
+// ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+var msie = ua.indexOf('MSIE ');
+if (msie > 0) {
+  // IE 10 or older => return version number
+  return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+}
+var trident = ua.indexOf('Trident/');
+if (trident > 0) {
+  // IE 11 => return version number
+  var rv = ua.indexOf('rv:');
+  return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+}
+var edge = ua.indexOf('Edge/');
+if (edge > 0) {
+  // Edge (IE 12+) => return version number
+  return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+}
+// other browser
+return false;
+}
 
 // Initialize Firebase
 var config = {
@@ -41,6 +88,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 var ids = [];
+
 function betaalLink() {
   var x = document.getElementById("snackbar");
   firebase.auth().onAuthStateChanged(function(user) {
@@ -79,8 +127,12 @@ function removeItem(span) {
   var pp = span.parentNode.parentNode;
   var p = span.parentNode;
   var position = p.getAttribute('id');
+  var retrieveArray = sessionStorage.id;
+  var arr = retrieveArray.split(",");
   pp.removeChild(p);
   ids.splice(position, 1);
+  arr.splice(position, 1);
+  sessionStorage.setItem('id', arr);
   closewagen();
   openwagen();
   if (typeof ids !== 'undefined' && ids.length > 0) {
@@ -101,6 +153,7 @@ function toevoegen() {
   var x = document.getElementById("snackbar");
   if (!ids.includes(id)) {
     ids.push(id);
+    sessionStorage.setItem('id', ids);
     if (typeof ids !== 'undefined' && ids.length > 0) {
       document.getElementById("totaalbedrag").innerHTML = "€ " + 20 * ids.length;
     } else {
@@ -123,7 +176,6 @@ function toevoegen() {
 }
 
 var dataString = [];
-var arrayData = [];
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (firebase.auth().currentUser) {
@@ -786,4 +838,38 @@ function set_ele(set_element) {
 
 function GotoRegister() {
   window.location = "register.html";
+}
+
+window.onload = function() {
+  if (document.referrer.endsWith("/execute")) {
+    sessionStorage.clear();
+  }
+  var puntenids = sessionStorage.getItem('id');
+  if(puntenids != null){
+  var split = puntenids.split(",");
+  }
+  if (puntenids == ""){
+   return;
+  }
+  if (typeof split !== 'undefined' && split.length > 0) {
+    var i;
+    for (i = 0; i < split.length; i++) {
+      var number = parseInt(split[i]);
+        ids.push(number);
+    }
+  }
+  if (typeof ids !== 'undefined' && ids.length > 0) {
+    document.getElementById("totaalbedrag").innerHTML = "€ " + 20 * ids.length;
+  } else {
+    document.getElementById("totaalbedrag").innerHTML = "€ 0";
+  }
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (firebase.auth().currentUser) {
+      var y = document.getElementById("buybutton");
+      y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="betaalLink()">Kopen</button>';
+    } else {
+      var y = document.getElementById("buybutton");
+      y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()">Registreren</button>';
+    }
+  });
 }
