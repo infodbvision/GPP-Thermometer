@@ -53,13 +53,10 @@ code {
 }
 h3 {
   font-family: 'Roboto', 'Helvetica', sans-serif;
-  background-size: 40px;
-  padding-left: 50px;
-  color: white;
+  padding-left: 35px;
 }
 h2 {
   font-family: 'Roboto', 'Helvetica', sans-serif;
-  background-size: 40px;
 }
 #verification-code-form {
   display:none;

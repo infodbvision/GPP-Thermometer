@@ -4,14 +4,15 @@ var closer = document.getElementById('popup-closer');
 var id;
 var arrayData = [];
 
+//----------------------------------------------------------------------------------------------------------
 // Get IE or Edge browser version
 var version = detectIE();
 if (version === false) {
-alert("niet ie of edge");
+
 } else if (version >= 12) {
-alert("edge");
+
 } else {
-alert("ie versie" + version)
+
 }
 // add details to debug result
 console.log( window.navigator.userAgent);
@@ -39,6 +40,7 @@ var trident = ua.indexOf('Trident/');
 if (trident > 0) {
   // IE 11 => return version number
   var rv = ua.indexOf('rv:');
+  window.location = "unsupportedbrowser.html";
   return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
 }
 var edge = ua.indexOf('Edge/');
@@ -46,11 +48,12 @@ if (edge > 0) {
   // Edge (IE 12+) => return version number
   return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
 }
-
-if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {alert('Its Safari');}
+//Safari
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {window.location = "unsupportedbrowser.html";}
 // other browser
 return false;
 }
+//--------------------------------------------------------------------------------------------------------
 
 // Initialize Firebase
 var config = {
