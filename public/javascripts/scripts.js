@@ -46,6 +46,8 @@ if (edge > 0) {
   // Edge (IE 12+) => return version number
   return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
 }
+
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {alert('Its Safari');}
 // other browser
 return false;
 }
