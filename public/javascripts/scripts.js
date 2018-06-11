@@ -4,16 +4,6 @@ var closer = document.getElementById('popup-closer');
 var id;
 var arrayData = [];
 
-//----------------------------------------------------------------------------------------------------------
-// Get IE or Edge browser version
-var version = detectIE();
-if (version === false) {
-
-} else if (version >= 12) {
-
-} else {
-
-}
 // add details to debug result
 console.log( window.navigator.userAgent);
 /**
@@ -22,18 +12,10 @@ console.log( window.navigator.userAgent);
 */
 function detectIE() {
 var ua = window.navigator.userAgent;
-// Test values; Uncomment to check result …
-// IE 10
-// ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
-// IE 11
-// ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
-// Edge 12 (Spartan)
-// ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
-// Edge 13
-// ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
 var msie = ua.indexOf('MSIE ');
 if (msie > 0) {
   // IE 10 or older => return version number
+  window.location = "unsupportedbrowser.html";
   return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
 }
 var trident = ua.indexOf('Trident/');
@@ -43,17 +25,13 @@ if (trident > 0) {
   window.location = "unsupportedbrowser.html";
   return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
 }
-var edge = ua.indexOf('Edge/');
-if (edge > 0) {
-  // Edge (IE 12+) => return version number
-  return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
-}
 //Safari
-if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {window.location = "unsupportedbrowser.html";}
-// other browser
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+  window.location = "unsupportedbrowser.html";
+}
+//Other browsers
 return false;
 }
-//--------------------------------------------------------------------------------------------------------
 
 // Initialize Firebase
 var config = {
