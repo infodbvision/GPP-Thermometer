@@ -4,7 +4,7 @@ var closer = document.getElementById('popup-closer');
 var id;
 var arrayData = [];
 
-//----------------------------------------------------------------------------------------------------------
+/*----------------------------------------------------------------------------------------------------------
 // Get IE or Edge browser version
 var version = detectIE();
 if (version === false) {
@@ -16,10 +16,10 @@ if (version === false) {
 }
 // add details to debug result
 console.log( window.navigator.userAgent);
-/**
-* detect IE
-* returns version of IE or false, if browser is not Internet Explorer
-*/
+//
+// detect IE
+// returns version of IE or false, if browser is not Internet Explorer
+//
 function detectIE() {
 var ua = window.navigator.userAgent;
 // Test values; Uncomment to check result …
@@ -53,7 +53,7 @@ if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('
 // other browser
 return false;
 }
-//--------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------*/
 
 // Initialize Firebase
 var config = {
