@@ -8,7 +8,7 @@ var arrayData = [];
 console.log( window.navigator.userAgent);
 /**
 * detect IE
-* returns version of IE or false, if browser is not Internet Explorer
+* returns version of IE, Safari or false, if browser is not Internet Explorer or Safari
 */
 function detectIE() {
 var ua = window.navigator.userAgent;
