@@ -1,3 +1,5 @@
+//Deze file zorgt ervoor dat de app werkt en alle files kan laden en displayen. Ook worden hier de juiste modules ingeladen die nodig zijn.
+
 var express = require('express');
 var session = require('express-session');
 var path = require('path');
@@ -11,7 +13,6 @@ var executed = require('./routes/executed');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 

@@ -9,18 +9,21 @@ var config = {
 };
 firebase.initializeApp(config);
 
+//De uitlog functie als de gebruiker uitlogt vanaf een pagina wordt hij terug gestuurd naar de home pagina. Als de gebruiker niet is ingelogd wordt hij
+//doorgestuurd naar de inlog pagina
+
 function logOut() {
   if(firebase.auth().currentUser){
   firebase.auth().signOut().then(function() {
     window.location = "/";
-    // Sign-out successful.
   }).catch(function(error) {
-    // An error happened.
   });
 } else{
   window.location = "login.html";
 }
 }
+
+//Als er een gebruiker is ingelogd of uitgelogd wordt de menu balk aangepast
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (user && user.emailVerified == true) {

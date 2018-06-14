@@ -10,9 +10,8 @@ var config = {
 firebase.initializeApp(config);
 var database = firebase.database();
 
-/**
-* Handles the sign in button press.
-*/
+//Hier wordt er ingelogd door de gebruiker eerst worden er checks gedaan of alle velden wel zijn ingevuld
+
 function toggleSignIn() {
     var x = document.getElementById("snackbar");
     var user = firebase.auth().currentUser;
@@ -38,13 +37,11 @@ function toggleSignIn() {
       }
 }
 
-    // Sign in with email and pass.
-    // [START authwithemail]
+    // Inloggen met email en wachtwoord als er een error komt vang dit af en laat het zien aan de gebruiker
+
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-      // Handle Errors here.
       var errorCode = error.code;
       var errorMessage = error.message;
-      // [START_EXCLUDE]
       if (errorCode === 'auth/wrong-password') {
         x.innerHTML = "Verkeerd wachtwoord";
         x.className = "show";
@@ -55,10 +52,10 @@ function toggleSignIn() {
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
       }
       console.log(error);
-      // [END_EXCLUDE]
     });
-    // [END authwithemail]
 }
+
+//In de functie wordt het wachtwoord gereset eerst komen er weer checks of alle velden wel zijn ingevuld
 
 function sendPasswordReset() {
   var x = document.getElementById("snackbar");
@@ -70,20 +67,16 @@ function sendPasswordReset() {
 
     return;
   }
-  // [START sendpasswordemail]
+
+  // Hier wordt de reset emial verstuurt ook worden er errors afgevangen en aan de gebruiker laten zien
+
   firebase.auth().sendPasswordResetEmail(email).then(function() {
-    // Password Reset Email Sent!
-    // [START_EXCLUDE]
     x.innerHTML = "Wachtwoord reset email is verstuurd";
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
-
-    // [END_EXCLUDE]
   }).catch(function(error) {
-    // Handle Errors here.
     var errorCode = error.code;
     var errorMessage = error.message;
-    // [START_EXCLUDE]
     if (errorCode == 'auth/invalid-email') {
       x.innerHTML = "Dit is geen geldig emailadres";
       x.className = "show";
@@ -94,34 +87,32 @@ function sendPasswordReset() {
       setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2500);
     }
     console.log(error);
-    // [END_EXCLUDE]
   });
-  // [END sendpasswordemail];
 }
+
+// Hier wordt er uitgelogd
 
 function logOut(){
   firebase.auth().signOut().then(function() {
-    // Sign-out successful.
   }).catch(function(error) {
-    // An error happened.
   });
 }
-/**
-* initApp handles setting up UI event listeners and registering Firebase auth listeners:
-*  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
-*    out, and that is where we update the UI.
-*/
+
+// Deze functie wordt aangeroepen als de pagina wordt geopend. In deze functie wordt de user object in de database geupdate om te zien of zijn email is
+//geverifieerd
+
 function initApp() {
   var usersRef = firebase.database().ref("users");
   var x = document.getElementById("snackbar");
-  // Listening for auth state changes.
-  // [START authstatelistener]
   firebase.auth().onAuthStateChanged(function(user) {
       if (user) {
         emailVerified = user.emailVerified;
         usersRef.child(user.uid).update({
           emailVerified: emailVerified
         });
+
+        //als de email is geverifieerd mag er worden ingelogd anders krijgt de gebruiker een melding
+
         if (user.emailVerified) {
             window.location = "/";
         }
@@ -132,7 +123,9 @@ function initApp() {
         }
       }
   });
-  // [END authstatelistener]
+
+  //Hier worden de functies gelinkt aan de knop die deze functie moet gaan uitvoeren. Ook wordt er met de enter knop de functie login aangeroepen 
+
   document.getElementById('sign-in').addEventListener('click', toggleSignIn, false);
   document.getElementById('password-reset').addEventListener('click', sendPasswordReset, false);
   document.getElementById("password").onkeyup = function(e){

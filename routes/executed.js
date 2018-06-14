@@ -1,3 +1,5 @@
+//Deze functie wordt aangeroepen als er een betaling is verricht via mollie
+
 var express = require('express');
 var router = express.Router();
 var Mollie = require('mollie-api-node');
@@ -7,7 +9,7 @@ require('firebase/auth');
 require('firebase/database');
 
 var serviceAccount = require("../gppthermometer-firebase-adminsdk-lrzzy-a41a8c4072.json");
-
+//Er wordt een admin account opgehaald zodat de cookie met het unieke id gecheckt kan worden.
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://gppthermometer.firebaseio.com"
@@ -26,6 +28,7 @@ var mollie = new Mollie.API.Client;
     };
     firebase.initializeApp(config);
     var db = firebase.database();
+
 router.get('/',function(req, res) {
     var paymentId = req.session.paymentId;
     mollie.payments.get(paymentId, function(payment) {
@@ -34,6 +37,8 @@ router.get('/',function(req, res) {
           res.render('payment-error', { 'error': payment.error });
         }
         if (payment.isPaid()) {
+          //Als er is betaald voor een punt dan wordt de cookie gecheckt om te kijken welke gebruiker er heeft betaald. Als deze gebruiker bestaat wordt het punt
+          //toegevoegd aan de database bij de juiste gebruiker. Ook wordt hier de tijd wanneer het punt is gekocht meegegeven.
           var paymentStatus;
           var paymentDescription;
           var idToken = req.cookies['idToken'];
@@ -54,10 +59,11 @@ router.get('/',function(req, res) {
                 console.log(error);
               });
           });
-
+          //De execute pagina wordt gerendered als er is betaald.
             res.render('executed-payment', { 'payment': payment });
 
         } else if(!payment.isOpen()){
+          //Als er niet is betaald en de betaling staat ook nog niet open dan wordt de aborted pagina gerenderd.
           res.render('aborted');
         }
 

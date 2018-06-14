@@ -23,6 +23,8 @@
   <title>GPP Thermometer</title>
 </head>
 
+<!--Laad balkje voordat de site is geladen-->
+
 <body>
   <div class='progress' id="progress_div">
     <div class='bar' id='bar1'></div>
@@ -45,6 +47,8 @@
   </div>
   <input type="hidden" id="progress_width" value="0">
 
+  	<!--Menu balk-->
+
   <div class="w3-bar w3-indigo w3-border">
     <a class="w3-bar-item w3-button material-icons w3-hover-text-black w3-hover-none" onclick="window.location = '/';">home</a>
     <a class="w3-bar-item"><span id = "displayName"></span></a>
@@ -53,6 +57,8 @@
     <a class="w3-bar-item w3-button w3-right w3-hover-text-black w3-hover-none" onclick="window.location = 'contact.html';">Contact</a>
     <button id="winkelwagen" class="w3-bar-item w3-button w3-right material-icons w3-hover-text-black w3-hover-none" onclick="openwagen()">shopping_cart</button>
   </div>
+
+  <!--Winkelwagen-->
 
   <div id="modal" class="w3-modal">
     <div class="w3-modal-content w3-animate-top">
@@ -74,6 +80,8 @@
     </div>
   </div>
 
+  <!--Popups op de kaart als er op een punt wordt geklikt-->
+
   <div class="w3-row-padding" style="padding-top:10px; padding-left: 0px;">
     <div class="w3-col s8 m8 l8 ">
       <div id="map" class="map"></div>
@@ -82,6 +90,8 @@
         <div id="popup-content"></div>
       </div>
     </div>
+
+    <!--Informatie paneel rechts-->
 
     <div class="w3-col s4 m4 l4" id ="tabid" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); float:right; background-color:white;">
       <h2 id="overlap" style="font-weight: bold; position: absolute; padding-top: 8%; padding-left: 7%;">Selecteer een punt</h2>
@@ -114,7 +124,6 @@
         <p>Betaling verloopt: <span id = "vervaldatum" style="float:right;"></span></p>
         <div id="linechart_material" style="width: 100%; height: 100%"></div>
       </div>
-      <div id="result"></div>
     </div>
   </div>
   <div id="snackbar"></div>
@@ -123,6 +132,9 @@
 <footer>
   Gemaakt door <a href="https://www.dbvision.nl">dBvision</a>
 </footer>
+
+<!-- cookie als je voor het eerst op de site komt-->
+
 <script async defer type="text/javascript" id="cookieinfo"
 	src="//cookieinfoscript.com/js/cookieinfo.min.js"
   data-font-family="Roboto, Helvetica, sans-serif"

@@ -1,38 +1,10 @@
+//Verschillende globale variabelen die later nodig zijn bij bepaalde functies
+
 var container = document.getElementById('popup');
 var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 var id;
 var arrayData = [];
-
-// add details to debug result
-console.log( window.navigator.userAgent);
-/**
-* detect IE
-* returns version of IE, Safari or false, if browser is not Internet Explorer or Safari
-*/
-function detectIE() {
-var ua = window.navigator.userAgent;
-var msie = ua.indexOf('MSIE ');
-if (msie > 0) {
-  // IE 10 or older => return version number
-  window.location = "unsupportedbrowser.html";
-  return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-}
-var trident = ua.indexOf('Trident/');
-if (trident > 0) {
-  // IE 11 => return version number
-  var rv = ua.indexOf('rv:');
-  window.location = "unsupportedbrowser.html";
-  return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-}
-//Safari
-if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
-  window.location = "unsupportedbrowser.html";
-}
-//Other browsers
-return false;
-}
-
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyCmeDbv8eGM8sPlpIGBiT6fxJJD-wujSBM",
@@ -44,19 +16,46 @@ var config = {
 };
 firebase.initializeApp(config);
 var database = firebase.database();
+var ids = [];
+var element;
+var list;
+var entry;
+var dataString = [];
+var features = [];
 
-var dataString;
+//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet onderseund wordt.
+
+function detectIE() {
+var ua = window.navigator.userAgent;
+var msie = ua.indexOf('MSIE ');
+if (msie > 0) {
+  // IE 10 of ouder
+  window.location = "unsupportedbrowser.html";
+  return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+}
+var trident = ua.indexOf('Trident/');
+if (trident > 0) {
+  // IE 11
+  var rv = ua.indexOf('rv:');
+  window.location = "unsupportedbrowser.html";
+  return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+}
+//Safari
+if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
+  window.location = "unsupportedbrowser.html";
+}
+//andere browsers
+return false;
+}
+
+//Hier wordt er door de gebruiker uitgelogd of ingelogd als er nog geen gebruiker is ingelogd
 
 function logOut() {
   if (firebase.auth().currentUser) {
-    // [START signout]
     firebase.auth().signOut().then(function() {
       window.location = "/";
-      // Sign-out successful.
     }).catch(function(error) {
-      // An error happened.
     });
-    // [END signout]
   } else {
     window.location = "login.html";
   }
@@ -70,7 +69,8 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-var ids = [];
+//In deze functie wordt er een cookie aangemaakt met een unieke token die gelinkt staat aan de gebruiker. Als er een punt wordt gekocht wordt dit cookie
+//meegstuurd om op de backend te kunnen checken welke gebruiker het is.
 
 function betaalLink() {
   var x = document.getElementById("snackbar");
@@ -91,9 +91,7 @@ function betaalLink() {
   });
 }
 
-var element;
-var list;
-var entry;
+//Deze functie wordt aangeroepen als de winkelwagen wordt geopend er wordt dan per item dat in de winkelwagen zit een span element gemaakt met een id
 
 function openwagen() {
   document.getElementById('modal').style.display = 'block';
@@ -105,6 +103,9 @@ function openwagen() {
     document.getElementById("ids").appendChild(element);
   });
 }
+
+//Deze functie wordt aangeroepen als er een item uit de winkelwagen wordt verwijderd. De array met punten die in de wagen zitten wordt opgehaald en het geselecteerd
+//punt wordt uit de array en de wagen verwijderd. Hierna wordt de open en close wagen functies nog een keer aangeroepen om de winkelwagen te updaten.
 
 function removeItem(span) {
   var pp = span.parentNode.parentNode;
@@ -125,12 +126,17 @@ function removeItem(span) {
   }
 }
 
+//Deze functie sluit de winkelwagen
+
 function closewagen() {
   document.getElementById('modal').style.display = 'none'
   while (list.hasChildNodes()) {
     list.removeChild(list.firstChild);
   }
 }
+
+//In deze functie wordt er een punt toegevoegd aan de array en de session zodat je de punten in de winkelwagen behoudt als je naar een andere pagina gaat.
+//Er worden meldingen gegeven aan de gebruiker als er een punt wordt toegevoegd of er al in zit
 
 function toevoegen() {
   var x = document.getElementById("snackbar");
@@ -158,7 +164,8 @@ function toevoegen() {
   }
 }
 
-var dataString = [];
+//In deze functie wordt er uit de database opgehaald welke punten de gebruiker die is ingelogd heeft gekocht. Deze punten worden in een array gezet en
+//deze array wordt aangepast zodat hij makkelijk uit te lezen is.
 
 firebase.auth().onAuthStateChanged(function(user) {
   if (firebase.auth().currentUser) {
@@ -177,6 +184,8 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
+//In deze functie wordt er gekeken wat de tijd nu is en worden de punten die meer dan een jaar geleden gekocht zijn verwijderd uit de database.
+
 firebase.auth().onAuthStateChanged(function(user) {
   if (firebase.auth().currentUser) {
     var userId = firebase.auth().currentUser.uid;
@@ -190,9 +199,11 @@ firebase.auth().onAuthStateChanged(function(user) {
   }
 });
 
-var features = [];
+//Dit is de hoofdfunctie van de site deze functie haalt doormiddel van ajax de data op van de database en leest deze data uit. De uitgelezen data wordt
+//aan features gelinkt die op de kaart gezet gaan worden. Zo heeft elke feature zijn eigen coordinaten en data.
+
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4izmNDSPyHtxAzkmepFB2PHXWvFx4ks5bIhIewA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i1rNBnRGyq5Uk3a4b_G6fAFlh8Lfks5bK28jwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
@@ -229,6 +240,9 @@ $.ajax({
   }
 });
 
+//Deze functie wordt aangeroepen als er op een punt aan de rand van de kaart geklikt wordt waardoor de popup niet volledig te zien is dan zoomt deze
+//functie naar de popup toe.
+
 var overlay = new ol.Overlay({
   element: container,
   autoPan: true,
@@ -236,6 +250,9 @@ var overlay = new ol.Overlay({
     duration: 1
   }
 });
+
+//Deze functie komt van de Geocoder plugin die gebruikt wordt om een zoek functie in de kaart te zetten. De variabelen zijn aangepast zodat de plugin goed
+// past bij de website.
 
 var geocoder = new Geocoder('nominatim', {
   provider: 'osm',
@@ -250,20 +267,28 @@ var geocoder = new Geocoder('nominatim', {
   preventDefault: false
 });
 
+//In deze functie wordt er een vector gemaakt van alle features die er zijn ingeladen
+
 var source = new ol.source.Vector({
   features: features
 });
+
+//In deze functie worden de punten uit de vector geclusterd als ze binnen de distance van elkaar liggen.
 
 var clusterSource = new ol.source.Cluster({
   distance: 6,
   source: source
 });
 
+//In deze functie wordt er een Open Street Map gemaakt waarop de punten worden laten zien.
+
 var raster = new ol.layer.Tile({
   source: new ol.source.OSM({
-    preload: 8
   })
 });
+
+//In deze functie wordt de opmaak van de punten bepaald. Als een punt in een cluster zit of als een punt niet in een cluster zit en niet is gekocht
+//wordt het punt blauw gemaakt. Als een punt wel is gekocht wordt er gekeken naar de geluidruimte om te kijken welke kleur het punt moet worden gemaakt.
 
 var styleCache = {};
 var clusters = new ol.layer.Vector({
@@ -344,6 +369,7 @@ var clusters = new ol.layer.Vector({
         styleCache[size] = style;
       }
     } else {
+      //BLAUW
       style = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 10,
@@ -367,6 +393,8 @@ var clusters = new ol.layer.Vector({
   }
 });
 
+//In deze functie wordt de map gemaakt met de OSM map en de clusters van de punten erop ook wordt er een center, zoom, minzoom en maxzoom geset.
+
 var map = new ol.Map({
   target: 'map',
   layers: [raster, clusters],
@@ -379,11 +407,16 @@ var map = new ol.Map({
   })
 });
 
+//Dit is een erg lange functie waarin op een klik wordt gekeken waar er op de kaart is geklikt als dit op een punt is die niet geclusterd is wordt alle data
+//van dit punt opgehaald en weergeven in het informatie vakje aan de rechterkant van de website. Als er niet voor dit punt betaald is wordt er neppe data laten zien
+//als er wel betaald is wordt de echte data laten zien.
+
 map.on('singleclick', function(evt) {
   overlay.setPosition(undefined);
   map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
     var coordinate = evt.coordinate;
     var featurelist = feature.N.features;
+    //Hier wordt de data van het geselecteerd punt opgehaald
     if (featurelist.length > 0) {
       for (var i = 0, ii = featurelist.length; i < ii; ++i) {
         id = featurelist[i].N.id;
@@ -404,7 +437,7 @@ map.on('singleclick', function(evt) {
         percentage_fout = featurelist[i].N.percentage_fout;
         laatste_meting = featurelist[i].N.laatste_meting;
         if (featurelist.length < 2) {
-          //HIER KOMT DE ECHTE DATA ALS ER IS BETAALD VOOR DIT PUNT
+          //Hier komt de echte data als er betaald is voor een punt
           if (arrayData.includes(JSON.stringify(id))) {
             var voorbeeld = document.getElementById("voorbeeld");
             voorbeeld.style.display = "none";
@@ -445,7 +478,7 @@ map.on('singleclick', function(evt) {
               meetDatumString = meetDatum.toLocaleDateString();
               document.getElementById("laatste_meting").innerHTML = meetDatumString;
             }
-
+            //Hier wordt er gekeken naar de datum wanneer het punt is gekocht en wordt dit getoond
             firebase.auth().onAuthStateChanged(function(user) {
               if (firebase.auth().currentUser) {
                 var userId = firebase.auth().currentUser.uid;
@@ -471,7 +504,7 @@ map.on('singleclick', function(evt) {
                 });
               }
             });
-
+            //Hier wordt het juiste tabje blauw gemaakt
             var i;
             var tablinks;
             var x = document.getElementsByClassName("tabs");
@@ -491,7 +524,7 @@ map.on('singleclick', function(evt) {
             var streepje = '-';
 
             var percentages = [];
-
+            //Dit is de berekening voor het verloop van de geluidproductie van een punt
             for (var c = 1; c <= parseInt(dagen_totaal); c++) {
               percentageArray = alle_percentages.split(hekje);
               dagpercentage = percentageArray[c - 1].split(aapje);
@@ -520,7 +553,7 @@ map.on('singleclick', function(evt) {
 
             google.charts.load('current');
             google.charts.setOnLoadCallback(drawChart);
-
+            //Deze functie maakt de Google Chart die wordt laten zien als er op een punt wordt geclickt die is betaald.
             function drawChart() {
 
               var data = new google.visualization.DataTable();
@@ -606,12 +639,13 @@ map.on('singleclick', function(evt) {
                 }
               })
               wrapperper.draw();
+              //Hier wordt de popup gemaakt als je op een punt klikt die is betaald
               var x = document.getElementById("popup");
               x.style.minWidth = "200px";
               content.innerHTML = 'U betaald voor dit punt'
               overlay.setPosition(coordinate);
             }
-            // DIT IS DE VOORBEELD DATA ALS ER NOG NIET IS BETAALD
+            //Dit is de voorbeeld data als er nog niet is betaald
           } else {
             var voorbeeld = document.getElementById("voorbeeld");
             voorbeeld.style.display = "block";
@@ -664,7 +698,7 @@ map.on('singleclick', function(evt) {
               'packages': ['corechart']
             });
             google.charts.setOnLoadCallback(drawChart);
-
+            //Deze Google Charts is simpeler omdat er geen berekeningen gedaan hoeven te worden.
             function drawChart() {
 
               var data = new google.visualization.DataTable();
@@ -727,6 +761,8 @@ map.on('singleclick', function(evt) {
               overlay.setPosition(coordinate);
 
             }
+            //Hier wordt de text en de knop van de popups gezet afhankelijk of er een gebruiker is ingelogd of niet, ook wordt de knop in de winkelwagen aangepast
+            //van registreren naar betalen als er een gebruiker is ingelogd.
             if (firebase.auth().currentUser) {
               var x = document.getElementById("popup");
               x.style.minWidth = "0px";
@@ -743,6 +779,7 @@ map.on('singleclick', function(evt) {
               y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()">Registreren</button>';
             }
           }
+          //Hier wordt de rechterkant van de pagina op klikbaar en opacity van 1 gezet als er op een punt is geklikt.
           var overlap = document.getElementById("overlap");
           var Locatie = document.getElementById("Locatie");
           var Wetgeving = document.getElementById("Wetgeving");
@@ -758,6 +795,7 @@ map.on('singleclick', function(evt) {
           Locatie.style.pointerEvents = "auto";
           Wetgeving.style.pointerEvents = "auto";
         } else {
+          //Als er op meer dan 1 punt wordt geklikt wordt dit laten zien.
           var x = document.getElementById("popup");
           x.style.minWidth = "200px";
           content.innerHTML = 'U heeft ' + featurelist.length + ' punten aangeklikt. Voor meer informatie zoom in en klik één punt aan.';
@@ -770,6 +808,8 @@ map.on('singleclick', function(evt) {
 });
 
 map.addControl(geocoder);
+
+//In deze functie wordt de juiste tab geopend en de anderen afgesloten als er van tab wordt geswitched.
 
 function openTab(evt, Tabname) {
   var i;
@@ -786,6 +826,8 @@ function openTab(evt, Tabname) {
   evt.currentTarget.className += " w3-indigo";
 }
 
+//Deze functie checkt wanneer de pagina volledig is geladen.
+
 document.onreadystatechange = function(e) {
   if (document.readyState == "interactive") {
     var all = document.getElementsByTagName("*");
@@ -794,6 +836,8 @@ document.onreadystatechange = function(e) {
     }
   }
 }
+
+//Deze functie kijkt of de pagina helemaal is geladen en laad een laadbalk zien totdat de pagina volledig is geladen.
 
 function check_element(ele) {
   var all = document.getElementsByTagName("*");
@@ -822,6 +866,10 @@ function set_ele(set_element) {
 function GotoRegister() {
   window.location = "register.html";
 }
+
+//Deze functie wordt aangeroepen als de pagina wordt geladen. Eerst wordt de sessie verwijderd als er van de execute pagina afkomt omdat er dan betaald
+//is voor de punten die in de winkelwagen zaten. Als de sessie niet wordt verwijderd worden de punten weer in de winkelwagen gezet. Ook wordt er gekeken
+//of de gebruiker is ingelogd en wordt aan de hand daarvan bepaalde of er een registeer of betaal knop moet komen in de winkelwagen
 
 window.onload = function() {
   if (document.referrer.endsWith("/execute")) {
