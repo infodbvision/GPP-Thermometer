@@ -23,7 +23,8 @@ var entry;
 var dataString = [];
 var features = [];
 
-//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet onderseund wordt.
+//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet ondersteund wordt.
+//De browsers die niet ondersteund worden zijn Internet Explorer elke versie, Safari elke versie en Alle versies van mobiele browsers.
 
 function detectIE() {
 var ua = window.navigator.userAgent;
