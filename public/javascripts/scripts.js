@@ -5,6 +5,7 @@ var content = document.getElementById('popup-content');
 var closer = document.getElementById('popup-closer');
 var id;
 var arrayData = [];
+var numberarray = [];
 // Initialize Firebase
 var config = {
   apiKey: "AIzaSyCmeDbv8eGM8sPlpIGBiT6fxJJD-wujSBM",
@@ -22,6 +23,7 @@ var list;
 var entry;
 var dataString = [];
 var features = [];
+var isshow = localStorage.getItem('isshow');
 
 //Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet ondersteund wordt.
 //De browsers die niet ondersteund worden zijn Internet Explorer elke versie, Safari elke versie en Alle versies van mobiele browsers.
@@ -92,9 +94,19 @@ function betaalLink() {
   });
 }
 
-//Deze functie wordt aangeroepen als de winkelwagen wordt geopend er wordt dan per item dat in de winkelwagen zit een span element gemaakt met een id
+//Deze functie wordt aangeroepen als de winkelwagen wordt geopend er wordt dan per item dat in de winkelwagen zit een span element gemaakt met een id. Ook wordt
+//de sessie leeg gehaald als de punten die in de winkelwagen zaten zijn gekocht.
 
-function openwagen() {
+function openwagen(span) {
+  var i;
+  for (i=0;i<ids.length;i++){
+  if (numberarray.includes(ids[i])) {
+    sessionStorage.clear();
+    ids = [];
+    $('#ids').load(document.URL +  ' #ids');
+    document.getElementById("totaalbedrag").innerHTML = "€ 0";
+  }
+}
   document.getElementById('modal').style.display = 'block';
   list = document.getElementById('ids');
   ids.forEach(function(entry) {
@@ -137,7 +149,7 @@ function closewagen() {
 }
 
 //In deze functie wordt er een punt toegevoegd aan de array en de session zodat je de punten in de winkelwagen behoudt als je naar een andere pagina gaat.
-//Er worden meldingen gegeven aan de gebruiker als er een punt wordt toegevoegd of er al in zit
+//Er worden meldingen gegeven aan de gebruiker als er een punt wordt toegevoegd of er al in zit.
 
 function toevoegen() {
   var x = document.getElementById("snackbar");
@@ -180,6 +192,7 @@ firebase.auth().onAuthStateChanged(function(user) {
         popString = jsonData.split("PuntID").pop();
         dataString = popString.slice(3, -23);
         arrayData.push(dataString);
+        numberarray.push(Number(dataString));
       });
     });
   }
@@ -289,7 +302,8 @@ var raster = new ol.layer.Tile({
 });
 
 //In deze functie wordt de opmaak van de punten bepaald. Als een punt in een cluster zit of als een punt niet in een cluster zit en niet is gekocht
-//wordt het punt blauw gemaakt. Als een punt wel is gekocht wordt er gekeken naar de geluidruimte om te kijken welke kleur het punt moet worden gemaakt.
+//wordt het punt blauw gemaakt. Als een punt wel is gekocht wordt er gekeken naar de geluidruimte om te kijken welke kleur het punt moet worden gemaakt. Ook
+//wordt er gekeken of een punt in de winkelwagen zit en wordt de kleur aangepast als dat zo is.
 
 var styleCache = {};
 var clusters = new ol.layer.Vector({
@@ -369,7 +383,20 @@ var clusters = new ol.layer.Vector({
         });
         styleCache[size] = style;
       }
-    } else {
+    } else if(size == 1 && ids.includes(id)){
+      style = (new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 10,
+          stroke: new ol.style.Stroke({
+            color: '#fff'
+          }),
+          fill: new ol.style.Fill({
+            color: 'orange'
+          })
+        })
+      }));
+    }
+    else {
       //BLAUW
       style = new ol.style.Style({
         image: new ol.style.Circle({
@@ -379,12 +406,6 @@ var clusters = new ol.layer.Vector({
           }),
           fill: new ol.style.Fill({
             color: '#3f51b5'
-          })
-        }),
-        text: new ol.style.Text({
-          text: size.toString(),
-          fill: new ol.style.Fill({
-            color: '#fff'
           })
         })
       });
@@ -643,7 +664,7 @@ map.on('singleclick', function(evt) {
               //Hier wordt de popup gemaakt als je op een punt klikt die is betaald
               var x = document.getElementById("popup");
               x.style.minWidth = "200px";
-              content.innerHTML = 'U betaald voor dit punt'
+              content.innerHTML = 'U bent geabonneerd op dit punt'
               overlay.setPosition(coordinate);
             }
             //Dit is de voorbeeld data als er nog niet is betaald
@@ -873,9 +894,6 @@ function GotoRegister() {
 //of de gebruiker is ingelogd en wordt aan de hand daarvan bepaalde of er een registeer of betaal knop moet komen in de winkelwagen
 
 window.onload = function() {
-  if (document.referrer.endsWith("/execute")) {
-    sessionStorage.clear();
-  }
   var puntenids = sessionStorage.getItem('id');
   if(puntenids != null){
   var split = puntenids.split(",");
@@ -904,4 +922,19 @@ window.onload = function() {
       y.innerHTML = '<button style="border-radius: 10px; float:right; margin-right:16px" class="w3-btn w3-ripple w3-indigo" onclick="GotoRegister()">Registreren</button>';
     }
   });
+}
+
+//Hier wordt er gekeken of de gebruiker al eerder op de website is geweest. Als dat niet zo is wordt er een informatie veld laten zien.
+
+function Overinfo(){
+    if (isshow== null) {
+        localStorage.setItem('isshow', 1);
+        // Show popup here
+        $('#overinfoid').hide();
+        $('#tabid').show();
+    }
+}
+if(isshow == 1){
+  $('#overinfoid').hide();
+  $('#tabid').show();
 }
