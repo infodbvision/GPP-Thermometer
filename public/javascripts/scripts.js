@@ -25,8 +25,9 @@ var dataString = [];
 var features = [];
 var isshow = localStorage.getItem('isshow');
 
-//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet ondersteund wordt.
-//De browsers die niet ondersteund worden zijn Internet Explorer elke versie, Safari elke versie en Alle versies van mobiele browsers.
+//Deze functie zorgt ervoor dat de website ook in IE werkt. Het is een polyfill van includes. Wel wordt het afgeraden om IE te gebruiken, omdat de website niet
+//optimaal werkt in IE.
+
 if (!Array.prototype.includes) {
   Object.defineProperty(Array.prototype, 'includes', {
     value: function(searchElement, fromIndex) {
@@ -66,6 +67,9 @@ if (!Array.prototype.includes) {
     }
   });
 }
+
+//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet ondersteund wordt.
+//De browsers die niet ondersteund worden zijn Internet Explorer elke versie, Safari elke versie en Alle versies van mobiele browsers.
 
 /*function detectIE() {
 var ua = window.navigator.userAgent;
@@ -933,6 +937,7 @@ function GotoRegister() {
 //of de gebruiker is ingelogd en wordt aan de hand daarvan bepaalde of er een registeer of betaal knop moet komen in de winkelwagen
 
 window.onload = function() {
+  //detectIE();
   var puntenids = sessionStorage.getItem('id');
   if(puntenids != null){
   var split = puntenids.split(",");
