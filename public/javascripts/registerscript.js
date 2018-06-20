@@ -16,7 +16,7 @@ function handleSignUp() {
   var x = document.getElementById("snackbar");
   var email = document.getElementById('email').value;
   var password = document.getElementById('password').value;
-  var displayName = document.getElementById('username').value;
+  var displayName = document.getElementById('gebruikersnaam').value;
   var usersRef = firebase.database().ref("users");
   var user = firebase.auth().currentUser;
   if (displayName.length == 0) {
@@ -115,7 +115,7 @@ function initApp() {
       handleSignUp();
     }
   }
-  document.getElementById("username").onkeyup = function(e){
+  document.getElementById("gebruikersnaam").onkeyup = function(e){
     if(e.keyCode === 13){
       handleSignUp();
     }
