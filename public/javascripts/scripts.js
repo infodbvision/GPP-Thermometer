@@ -475,15 +475,12 @@ var map = new ol.Map({
 //Deze functie haalt de locatie van de gebruiker op en laat daar de kaart zien en zoomt in
 
 var geolocation = new ol.Geolocation({
-  // take the projection to use from the map's view
   projection: map.getView().getProjection(),
   tracking: true
 });
-// listen to changes in position
 geolocation.on('change', function(evt) {
   map.getView().setCenter(geolocation.getPosition());
   map.getView().setZoom(13);
-  console.log(geolocation.getPosition());
 });
 
 //Dit is een erg lange functie waarin op een klik wordt gekeken waar er op de kaart is geklikt als dit op een punt is die niet geclusterd is wordt alle data
