@@ -155,7 +155,7 @@ function openwagen(span) {
   ids.forEach(function(entry) {
     element = document.createElement('span');
     element.setAttribute("id", "" + list.children.length);
-    element.innerHTML = entry + " " + "<button class='w3-button w3-small w3-ripple w3-hover-none w3-hover-text-red' style='padding:inherit; vertical-align: text-top;' onclick='removeItem(this)'>&times;</button>" + "<br>";
+    element.innerHTML = entry + " " + "<button class='w3-button w3-small w3-ripple w3-hover-red w3-hover-text-white' style='padding:  inherit;padding-right: 3px;padding-left: 3px;padding-bottom: 2px;vertical-align: text-top;' onclick='removeItem(this)'>&times;</button>" + "<br>";
     document.getElementById("ids").appendChild(element);
   });
 }
@@ -260,7 +260,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 //aan features gelinkt die op de kaart gezet gaan worden. Zo heeft elke feature zijn eigen coordinaten en data.
 
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i1rNBnRGyq5Uk3a4b_G6fAFlh8Lfks5bK28jwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i9CYTC3roqAjWVVlRozczmV42JrNks5bOczUwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
@@ -484,8 +484,8 @@ geolocation.on('change', function(evt) {
 });
 
 //Dit is een erg lange functie waarin op een klik wordt gekeken waar er op de kaart is geklikt als dit op een punt is die niet geclusterd is wordt alle data
-//van dit punt opgehaald en weergeven in het informatie vakje aan de rechterkant van de website. Als er niet voor dit punt betaald is wordt er neppe data laten zien
-//als er wel betaald is wordt de echte data laten zien.
+//van dit punt opgehaald en weergeven in het informatie vakje aan de rechterkant van de website. Als er niet voor dit punt betaald is wordt er voorbeeld
+//data laten zien als er wel betaald is wordt de echte data laten zien.
 
 map.on('singleclick', function(evt) {
   overlay.setPosition(undefined);
