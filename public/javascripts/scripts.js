@@ -472,13 +472,14 @@ var map = new ol.Map({
   })
 });
 
-//Deze functie haalt de locatie van de gebruiker op en laat daar de kaart zien en zoomt in
+//Deze functie haalt de locatie van de gebruiker op en laat daar de kaart zien en zoomt in. Deze functie wordt maar een keer aangeroepen ivm problemen
+//in Firefox als het .on was in plaats van .once
 
 var geolocation = new ol.Geolocation({
-  projection: map.getView().getProjection(),
-  tracking: true
+  tracking: true,
+  projection: map.getView().getProjection()
 });
-geolocation.on('change', function(evt) {
+geolocation.once('change', function() {
   map.getView().setCenter(geolocation.getPosition());
   map.getView().setZoom(13);
 });
