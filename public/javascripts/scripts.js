@@ -68,32 +68,6 @@ if (!Array.prototype.includes) {
   });
 }
 
-//Deze functie kijkt met welke browser de website wordt geopend en laat de niet supported pagina zien als dit een browser is die niet ondersteund wordt.
-//De browsers die niet ondersteund worden zijn Internet Explorer elke versie, Safari elke versie en Alle versies van mobiele browsers.
-
-/*function detectIE() {
-var ua = window.navigator.userAgent;
-var msie = ua.indexOf('MSIE ');
-if (msie > 0) {
-  // IE 10 of ouder
-  window.location = "unsupportedbrowser.html";
-  return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
-}
-var trident = ua.indexOf('Trident/');
-if (trident > 0) {
-  // IE 11
-  var rv = ua.indexOf('rv:');
-  window.location = "unsupportedbrowser.html";
-  return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
-}
-//Safari
-if (navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1) {
-  window.location = "unsupportedbrowser.html";
-}
-//andere browsers
-return false;
-}*/
-
 //Hier wordt er door de gebruiker uitgelogd of ingelogd als er nog geen gebruiker is ingelogd
 
 function logOut() {
@@ -949,7 +923,6 @@ function GotoRegister() {
 //of de gebruiker is ingelogd en wordt aan de hand daarvan bepaalde of er een registeer of betaal knop moet komen in de winkelwagen
 
 window.onload = function() {
-  //detectIE();
   var puntenids = sessionStorage.getItem('id');
   if(puntenids != null){
   var split = puntenids.split(",");
