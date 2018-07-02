@@ -234,7 +234,7 @@ firebase.auth().onAuthStateChanged(function(user) {
 //aan features gelinkt die op de kaart gezet gaan worden. Zo heeft elke feature zijn eigen coordinaten en data.
 
 $.ajax({
-  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i9CYTC3roqAjWVVlRozczmV42JrNks5bOczUwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
+  url: 'https://raw.githubusercontent.com/Meesgieling/GPP-Thermometer/master/data.json?token=ALZ4i1K2_M3ffwzwFy_X73f6cHVS63RYks5bQ1vIwA%3D%3D', //http://172.16.29.41:8080/geoserver/geluidregister/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=geluidregister:c207_geluidproductieplafonds&maxFeatures=61000&outputFormat=application%2Fjson
   dataType: 'json',
   async: false,
   success: function(json1) {
